@@ -42,6 +42,12 @@ jobs:
 
       - name: Deploy to cPanel (FTPS)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        env:
+          # The FTP host has IPv4 + IPv6, but GitHub runners have no IPv6.
+          # Node's "happy eyeballs" gives each address only 250 ms, which is
+          # shorter than the US→Indonesia round trip, so IPv4 times out.
+          # Force a plain IPv4-first connect with the normal OS timeout.
+          NODE_OPTIONS: --no-network-family-autoselection --dns-result-order=ipv4first
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}

@@ -8,6 +8,9 @@ ServerSignature Off
 
 ErrorDocument 404 /404.html
 
+# Static site: always serve index.html (never a leftover index.php)
+DirectoryIndex index.html
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
 

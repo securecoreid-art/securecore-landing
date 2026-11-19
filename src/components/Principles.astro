@@ -1,0 +1,105 @@
+---
+import Icon from './Icon.astro';
+import { content, type Lang } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = content[Astro.props.lang].principles;
+const icons = ['shieldCheck', 'lock', 'mail', 'eye'];
+---
+
+<section id="principles" class="section" aria-labelledby="principles-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="kicker">{t.kicker}</p>
+      <h2 id="principles-title" class="section-title">{t.title}</h2>
+    </div>
+
+    <ul class="grid">
+      {
+        t.items.map((item, i) => (
+          <li>
+            <span class="icon">
+              <Icon name={icons[i] ?? 'check'} size={22} />
+            </span>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  li {
+    padding: 30px 26px 32px;
+    background: var(--bg-elevated);
+  }
+
+  li + li {
+    border-left: 1px solid var(--border);
+  }
+
+  .icon {
+    display: inline-grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    color: var(--amber);
+    background: rgba(253, 188, 91, 0.1);
+    border: 1px solid rgba(253, 188, 91, 0.25);
+  }
+
+  h3 {
+    font-size: 1.0625rem;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: var(--text-muted);
+    font-size: 0.925rem;
+  }
+
+  @media (max-width: 960px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    li + li {
+      border-left: 0;
+    }
+    li:nth-child(even) {
+      border-left: 1px solid var(--border);
+    }
+    li:nth-child(n + 3) {
+      border-top: 1px solid var(--border);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    li:nth-child(even) {
+      border-left: 0;
+    }
+    li + li {
+      border-top: 1px solid var(--border);
+    }
+    li {
+      padding: 24px 20px;
+    }
+  }
+</style>

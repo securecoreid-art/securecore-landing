@@ -1,0 +1,102 @@
+---
+import Icon from './Icon.astro';
+import { content, type Lang } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = content[Astro.props.lang].about;
+const icons = ['eye', 'scale', 'target'];
+---
+
+<section id="about" class="section" aria-labelledby="about-title">
+  <div class="container grid">
+    <div>
+      <p class="kicker">{t.kicker}</p>
+      <h2 id="about-title" class="section-title">{t.title}</h2>
+      <div class="body">
+        {t.body.map((p) => <p>{p}</p>)}
+      </div>
+    </div>
+
+    <ul class="points">
+      {
+        t.points.map((pt, i) => (
+          <li class="card">
+            <span class="icon">
+              <Icon name={icons[i] ?? 'check'} size={22} />
+            </span>
+            <div>
+              <h3>{pt.title}</h3>
+              <p>{pt.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(40px, 6vw, 88px);
+    align-items: start;
+  }
+
+  .body {
+    margin-top: 24px;
+    display: grid;
+    gap: 16px;
+    color: var(--text-muted);
+    font-size: 1.0625rem;
+    max-width: 58ch;
+  }
+
+  .points {
+    display: grid;
+    gap: 14px;
+  }
+
+  .points li {
+    display: flex;
+    gap: 18px;
+    padding: 22px 24px;
+  }
+
+  .icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(30, 125, 218, 0.12);
+    color: var(--accent);
+  }
+
+  h3 {
+    font-size: 1.0625rem;
+    margin-bottom: 6px;
+  }
+
+  .points p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .points li {
+      padding: 18px;
+      gap: 14px;
+    }
+  }
+</style>

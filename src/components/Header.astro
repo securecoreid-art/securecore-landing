@@ -1,0 +1,246 @@
+---
+import Shield from './Shield.astro';
+import Icon from './Icon.astro';
+import { content, homePath, mailto, type Lang } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+  /** Anchor links only make sense on the home page. */
+  onHome?: boolean;
+}
+
+const { lang, onHome = true } = Astro.props;
+const t = content[lang];
+const otherLang: Lang = lang === 'en' ? 'id' : 'en';
+const home = homePath(lang);
+const navHref = (hash: string) => (onHome ? hash : `${home}${hash}`);
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a class="brand" href={home} aria-label={t.a11y.home}>
+      <Shield size={30} id="hdr" />
+      <span class="wordmark">SECURE CORE</span>
+    </a>
+
+    <nav class="nav-desktop" aria-label={t.a11y.primaryNav}>
+      <ul>
+        {t.nav.map((item) => <li><a href={navHref(item.href)}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <a
+        class="lang"
+        href={homePath(otherLang)}
+        hreflang={otherLang}
+        lang={otherLang}
+        aria-label={t.a11y.langSwitch}
+        title={t.a11y.langSwitch}
+      >
+        <Icon name="globe" size={16} />
+        <span>{t.langShort}</span>
+      </a>
+      <a class="btn btn-primary btn-sm cta" href={mailto(t.hero.mailSubject)}>{t.navCta}</a>
+
+      <details class="nav-mobile">
+        <summary aria-label={t.a11y.menu}>
+          <Icon name="menu" size={22} class="icon-open" />
+          <Icon name="close" size={22} class="icon-close" />
+        </summary>
+        <nav class="mobile-panel" aria-label={t.a11y.primaryNav}>
+          <ul>
+            {t.nav.map((item) => <li><a href={navHref(item.href)}>{item.label}</a></li>)}
+          </ul>
+          <a class="btn btn-primary" href={mailto(t.hero.mailSubject)}>{t.navCta}</a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Close the mobile menu after a link is chosen or Escape is pressed.
+  const menu = document.querySelector<HTMLDetailsElement>('.nav-mobile');
+  if (menu) {
+    menu.querySelectorAll('a').forEach((a) =>
+      a.addEventListener('click', () => menu.removeAttribute('open')),
+    );
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu.open) {
+        menu.removeAttribute('open');
+        menu.querySelector('summary')?.focus();
+      }
+    });
+  }
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(7, 13, 25, 0.82);
+    backdrop-filter: saturate(160%) blur(12px);
+    -webkit-backdrop-filter: saturate(160%) blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bar {
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text);
+    flex-shrink: 0;
+  }
+
+  .brand:hover {
+    text-decoration: none;
+  }
+
+  .wordmark {
+    font-weight: 800;
+    font-size: 1.05rem;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+
+  .nav-desktop {
+    margin-inline: auto;
+  }
+
+  .nav-desktop ul {
+    display: flex;
+    gap: 4px;
+  }
+
+  .nav-desktop a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 0.925rem;
+    font-weight: 500;
+  }
+
+  .nav-desktop a:hover {
+    color: var(--text);
+    background: var(--surface);
+    text-decoration: none;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+  }
+
+  .nav-desktop + .actions {
+    margin-left: 0;
+  }
+
+  .lang {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .lang:hover {
+    color: var(--text);
+    border-color: var(--accent);
+    text-decoration: none;
+  }
+
+  /* mobile menu */
+  .nav-mobile {
+    display: none;
+  }
+
+  .nav-mobile summary {
+    list-style: none;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+  }
+
+  .nav-mobile summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .nav-mobile :global(.icon-close),
+  .nav-mobile[open] :global(.icon-open) {
+    display: none;
+  }
+
+  .nav-mobile[open] :global(.icon-close) {
+    display: block;
+  }
+
+  .mobile-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--header-h);
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
+    padding: 12px var(--gutter) 24px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+  }
+
+  .mobile-panel ul {
+    margin-bottom: 16px;
+  }
+
+  .mobile-panel li + li {
+    border-top: 1px solid var(--border);
+  }
+
+  .mobile-panel ul a {
+    display: block;
+    padding: 14px 4px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .mobile-panel .btn {
+    width: 100%;
+  }
+
+  @media (max-width: 900px) {
+    .nav-desktop,
+    .cta {
+      display: none;
+    }
+    .nav-mobile {
+      display: block;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .wordmark {
+      font-size: 0.95rem;
+      letter-spacing: 0.06em;
+    }
+  }
+</style>

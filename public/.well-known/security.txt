@@ -1,0 +1,8 @@
+# SecureCore security contact
+# https://securecore.id/.well-known/security.txt
+# Format: RFC 9116 (https://www.rfc-editor.org/rfc/rfc9116)
+
+Contact: mailto:contact@securecore.id
+Expires: 2027-11-19T00:00:00.000Z
+Preferred-Languages: en, id
+Canonical: https://securecore.id/.well-known/security.txt

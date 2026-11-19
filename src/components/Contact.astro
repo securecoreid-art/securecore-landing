@@ -1,0 +1,130 @@
+---
+import Icon from './Icon.astro';
+import { CONTACT_EMAIL, content, mailto, type Lang } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = content[Astro.props.lang].contact;
+---
+
+<section id="contact" class="section" aria-labelledby="contact-title">
+  <div class="container">
+    <div class="panel">
+      <div class="glow" aria-hidden="true"></div>
+      <div class="copy">
+        <p class="kicker">{t.kicker}</p>
+        <h2 id="contact-title" class="section-title">{t.title}</h2>
+        <p class="section-lead">{t.lead}</p>
+      </div>
+
+      <div class="reach">
+        <p class="label">{t.emailLabel}</p>
+        <a class="email" href={mailto(t.mailSubject)}>{CONTACT_EMAIL}</a>
+        <a class="btn btn-primary" href={mailto(t.mailSubject)}>
+          <Icon name="mail" size={18} />
+          {t.cta}
+        </a>
+        <p class="note">
+          <Icon name="lock" size={16} />
+          <span>{t.note}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .panel {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(32px, 5vw, 64px);
+    align-items: center;
+    padding: clamp(32px, 6vw, 64px);
+    border-radius: 20px;
+    border: 1px solid var(--border-strong);
+    background: linear-gradient(135deg, #0f1c34 0%, var(--bg-elevated) 60%);
+  }
+
+  .glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(420px 260px at 0% 0%, rgba(30, 125, 218, 0.25), transparent 70%),
+      radial-gradient(360px 240px at 100% 100%, rgba(253, 188, 91, 0.12), transparent 70%);
+  }
+
+  .copy,
+  .reach {
+    position: relative;
+  }
+
+  .reach {
+    display: grid;
+    gap: 16px;
+    justify-items: start;
+    padding: 28px;
+    border-radius: var(--radius);
+    background: rgba(7, 13, 25, 0.6);
+    border: 1px solid var(--border);
+  }
+
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .email {
+    font-family: var(--font-mono);
+    font-size: clamp(1.05rem, 2.2vw, 1.375rem);
+    font-weight: 500;
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+
+  .email:hover {
+    color: var(--accent);
+  }
+
+  .note {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--text-subtle);
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+
+  .note :global(svg) {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--amber);
+  }
+
+  @media (max-width: 900px) {
+    .panel {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .panel {
+      padding: 28px 20px;
+    }
+    .reach {
+      padding: 20px;
+    }
+    .reach .btn {
+      width: 100%;
+    }
+  }
+</style>

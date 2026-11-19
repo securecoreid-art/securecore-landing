@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-13 -2 140 142" fill="none">
+  <defs>
+    <mask id="k" maskUnits="userSpaceOnUse">
+      <rect x="-13" width="140" height="140" fill="#fff"/>
+      <circle cx="57" cy="59.4" r="8.8" fill="#000"/>
+      <path d="M53 66h8l4.4 12H48.6z" fill="#000"/>
+    </mask>
+    <clipPath id="l"><rect x="-13" width="70" height="140"/></clipPath>
+  </defs>
+  <g stroke="#1E7DDA" stroke-width="6">
+    <path d="M8 48V24.5L57 6l49 18.5V63c0 33-20 51-49 70l-10.2-7V107C36 99 27 86 23.6 71.6"/>
+    <path d="M42.2 27.2 23.2 34v23L8 62.5c0 26 9 41 25.6 53.5"/>
+  </g>
+  <g fill="#1E7DDA">
+    <circle cx="8" cy="48" r="7"/>
+    <circle cx="42.2" cy="27.2" r="7"/>
+    <circle cx="23.6" cy="71.6" r="7"/>
+    <circle cx="33.6" cy="116" r="7"/>
+  </g>
+  <path d="M57 19.2 93.4 32.8V63c0 27-13.4 41-36.4 54.6z" fill="#FDBC5B" mask="url(#k)"/>
+  <g clip-path="url(#l)" fill="#FDBC5B">
+    <circle cx="57" cy="59.4" r="8.8"/>
+    <path d="M53 66h8l4.4 12H48.6z"/>
+  </g>
+</svg>

@@ -1,0 +1,124 @@
+---
+import { content, type Lang } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = content[Astro.props.lang].approach;
+---
+
+<section id="approach" class="section" aria-labelledby="approach-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="kicker">{t.kicker}</p>
+      <h2 id="approach-title" class="section-title">{t.title}</h2>
+      <p class="section-lead">{t.lead}</p>
+    </div>
+
+    <ol class="steps">
+      {
+        t.steps.map((step, i) => (
+          <li>
+            <span class="marker" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 20px;
+    position: relative;
+  }
+
+  /* connecting line behind the markers */
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 22px;
+    left: 22px;
+    right: 22px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--brand-blue), var(--brand-amber));
+    opacity: 0.5;
+  }
+
+  li {
+    position: relative;
+  }
+
+  .marker {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: 22px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--amber);
+  }
+
+  h3 {
+    font-size: 1.0625rem;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: var(--text-muted);
+    font-size: 0.925rem;
+  }
+
+  @media (max-width: 960px) {
+    .steps {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+
+    .steps::before {
+      top: 22px;
+      bottom: 22px;
+      left: 22px;
+      right: auto;
+      width: 1px;
+      height: auto;
+      background: linear-gradient(180deg, var(--brand-blue), var(--brand-amber));
+    }
+
+    li {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      column-gap: 20px;
+      padding-bottom: 28px;
+    }
+
+    li:last-child {
+      padding-bottom: 0;
+    }
+
+    .marker {
+      grid-row: span 2;
+      margin-bottom: 0;
+    }
+
+    h3 {
+      padding-top: 10px;
+    }
+  }
+</style>

@@ -1,0 +1,106 @@
+---
+import Shield from './Shield.astro';
+import { CONTACT_EMAIL, content, homePath, type Lang } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = content[lang];
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="top">
+      <a class="brand" href={homePath(lang)} aria-label={t.a11y.home}>
+        <Shield size={36} id="ftr" />
+        <span>
+          <span class="wordmark">SECURE CORE</span>
+          <span class="tagline">{t.footer.tagline}</span>
+        </span>
+      </a>
+      <p class="legal">{t.footer.legal}</p>
+    </div>
+
+    <div class="bottom">
+      <p>© {year} SecureCore. {t.footer.rights}</p>
+      <ul>
+        <li><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></li>
+        <li><a href="/.well-known/security.txt">{t.footer.securityTxt}</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border);
+    background: var(--bg-elevated);
+    padding-block: 48px 32px;
+    font-size: 0.9rem;
+  }
+
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 24px 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--text);
+  }
+
+  .brand:hover {
+    text-decoration: none;
+  }
+
+  .wordmark {
+    display: block;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+  }
+
+  .tagline {
+    display: block;
+    margin-top: 2px;
+    color: var(--amber);
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+  }
+
+  .legal {
+    max-width: 46ch;
+    color: var(--text-subtle);
+  }
+
+  .bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px 32px;
+    padding-top: 24px;
+    color: var(--text-subtle);
+  }
+
+  .bottom ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+  }
+
+  .bottom a {
+    color: var(--text-muted);
+  }
+
+  .bottom a:hover {
+    color: var(--text);
+  }
+</style>

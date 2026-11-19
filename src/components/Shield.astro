@@ -1,0 +1,60 @@
+---
+/**
+ * SecureCore shield mark, redrawn as SVG from the original logo.
+ * The keyhole is cut out with a mask, so it works on any background.
+ */
+interface Props {
+  size?: number;
+  class?: string;
+  id?: string;
+}
+
+const { size = 40, class: className, id = 'sc' } = Astro.props;
+const maskId = `${id}-keyhole-mask`;
+const clipId = `${id}-left-half`;
+---
+
+<svg
+  class={className}
+  width={size}
+  height={Math.round(size * (142 / 114))}
+  viewBox="0 -2 114 142"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <mask id={maskId} maskUnits="userSpaceOnUse">
+      <rect width="114" height="140" fill="#fff"></rect>
+      <circle cx="57" cy="59.4" r="8.8" fill="#000"></circle>
+      <path d="M53 66h8l4.4 12H48.6z" fill="#000"></path>
+    </mask>
+    <clipPath id={clipId}>
+      <rect width="57" height="140"></rect>
+    </clipPath>
+  </defs>
+
+  <!-- circuit traces + shield outline -->
+  <g stroke="#1E7DDA" stroke-width="5" stroke-linejoin="miter" stroke-linecap="butt">
+    <path d="M8 48V24.5L57 6l49 18.5V63c0 33-20 51-49 70l-10.2-7V107C36 99 27 86 23.6 71.6"></path>
+    <path d="M42.2 27.2 23.2 34v23L8 62.5c0 26 9 41 25.6 53.5"></path>
+  </g>
+  <g fill="#1E7DDA">
+    <circle cx="8" cy="48" r="6.4"></circle>
+    <circle cx="42.2" cy="27.2" r="6.4"></circle>
+    <circle cx="23.6" cy="71.6" r="6.4"></circle>
+    <circle cx="33.6" cy="116" r="6.4"></circle>
+  </g>
+
+  <!-- amber half with keyhole cut out -->
+  <path
+    d="M57 19.2 93.4 32.8V63c0 27-13.4 41-36.4 54.6z"
+    fill="#FDBC5B"
+    mask={`url(#${maskId})`}
+  ></path>
+  <!-- left half of the keyhole in amber -->
+  <g clip-path={`url(#${clipId})`} fill="#FDBC5B">
+    <circle cx="57" cy="59.4" r="8.8"></circle>
+    <path d="M53 66h8l4.4 12H48.6z"></path>
+  </g>
+</svg>

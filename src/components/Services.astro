@@ -1,0 +1,108 @@
+---
+import Icon from './Icon.astro';
+import { content, type Lang } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = content[Astro.props.lang].services;
+---
+
+<section id="services" class="section services" aria-labelledby="services-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="kicker">{t.kicker}</p>
+      <h2 id="services-title" class="section-title">{t.title}</h2>
+      <p class="section-lead">{t.lead}</p>
+    </div>
+
+    <ul class="grid">
+      {
+        t.items.map((item, i) => (
+          <li class="card item">
+            <div class="top">
+              <span class="icon">
+                <Icon name={item.icon} size={24} />
+              </span>
+              <span class="num">{String(i + 1).padStart(2, '0')}</span>
+            </div>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .services {
+    background: linear-gradient(180deg, transparent, rgba(16, 27, 48, 0.35) 40%, transparent);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .item {
+    padding: 28px 26px 30px;
+    transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  }
+
+  .item:hover {
+    border-color: rgba(90, 168, 240, 0.45);
+    transform: translateY(-2px);
+  }
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
+
+  .icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(30, 125, 218, 0.12);
+    border: 1px solid rgba(30, 125, 218, 0.3);
+    color: var(--accent);
+  }
+
+  .num {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-subtle);
+  }
+
+  h3 {
+    font-size: 1.1875rem;
+    margin-bottom: 10px;
+  }
+
+  p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 960px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 600px) {
+    .grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .item {
+      padding: 22px 20px 24px;
+    }
+  }
+</style>

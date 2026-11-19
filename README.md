@@ -24,25 +24,38 @@ npm run preview   # cek hasil build
 
 ## Struktur
 
+Website multi-page, dua bahasa:
+
+| Halaman | English | Indonesia |
+|---|---|---|
+| Home | `/` | `/id/` |
+| About | `/about/` | `/id/about/` |
+| Services | `/services/` | `/id/services/` |
+| Approach | `/approach/` | `/id/approach/` |
+| Principles | `/principles/` | `/id/principles/` |
+| Contact | `/contact/` | `/id/contact/` |
+
 ```
 src/
   i18n/content.ts        ← SEMUA teks website (EN + ID). Edit copy di sini.
-  components/            ← Header, Hero, About, Services, Approach, Principles, Contact, Footer
-  layouts/Base.astro     ← <head>, meta SEO, Open Graph
-  pages/index.astro      ← halaman English  (/)
-  pages/id/index.astro   ← halaman Indonesia (/id/)
-  pages/404.astro
+  views/                 ← susunan tiap halaman (Home, About, Services, ...)
+  pages/                 ← route: 1 file per halaman EN, pages/id/ untuk ID
+  pages/sitemap.xml.ts   ← sitemap otomatis dari daftar halaman
+  components/            ← Header, Footer, Hero, PageHero, ServicesGrid, dll.
+  layouts/               ← Base (<head>, SEO) & Page (header + footer)
   styles/global.css      ← warna brand, font, tombol
 public/
   .htaccess              ← HTTPS redirect + security headers + cache
   .well-known/security.txt
-  favicon.svg, apple-touch-icon.png, og-image.png, robots.txt, sitemap.xml
+  favicon.svg, apple-touch-icon.png, og-image.png, robots.txt
+docs/copy/               ← sumber copywriting
 brand/logo-original.png  ← file logo asli
 .github/workflows/deploy.yml
 ```
 
 **Ganti teks:** edit `src/i18n/content.ts`. Setiap teks ada versi `en` dan `id`.
 **Ganti email:** ubah `CONTACT_EMAIL` di file yang sama, plus `public/.well-known/security.txt`.
+**Tambah halaman baru:** tambahkan key di `PAGES` + teks di `content.ts`, buat view di `src/views/`, lalu 2 file route (`src/pages/x.astro` dan `src/pages/id/x.astro`).
 
 ---
 

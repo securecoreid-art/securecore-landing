@@ -1,26 +1,28 @@
 ---
 import '../styles/global.css';
-import { content, homePath, type Lang } from '../i18n/content';
+import { content, pagePath, type Lang, type PageKey } from '../i18n/content';
 
 interface Props {
   lang: Lang;
+  /** Page key, used for title/description and language alternates. Omit for 404. */
+  page?: PageKey;
   title?: string;
   description?: string;
   noindex?: boolean;
 }
 
-const { lang, title, description, noindex = false } = Astro.props;
+const { lang, page, title, description, noindex = false } = Astro.props;
 const t = content[lang];
+const meta = t.meta.pages[page ?? 'home'];
 
-const pageTitle = title ?? t.meta.title;
-const pageDescription = description ?? t.meta.description;
+const pageTitle = title ?? meta.title;
+const pageDescription = description ?? meta.description;
 const site = Astro.site ?? new URL('https://securecore.id');
-const canonical = new URL(Astro.url.pathname, site).href;
+const canonical = new URL(page ? pagePath(lang, page) : Astro.url.pathname, site).href;
 const ogImage = new URL('/og-image.png', site).href;
-const alternates = (['en', 'id'] as const).map((l) => ({
-  lang: l,
-  href: new URL(homePath(l), site).href,
-}));
+const alternates = page
+  ? (['en', 'id'] as const).map((l) => ({ lang: l, href: new URL(pagePath(l, page), site).href }))
+  : [];
 ---
 
 <!doctype html>
@@ -35,15 +37,13 @@ const alternates = (['en', 'id'] as const).map((l) => ({
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     {noindex && <meta name="robots" content="noindex" />}
 
-    <link rel="canonical" href={canonical} />
-    {
-      !noindex &&
-        alternates.map((a) => <link rel="alternate" hreflang={a.lang} href={a.href} />)
-    }
-    {!noindex && <link rel="alternate" hreflang="x-default" href={alternates[0].href} />}
+    {!noindex && <link rel="canonical" href={canonical} />}
+    {!noindex && alternates.map((a) => <link rel="alternate" hreflang={a.lang} href={a.href} />)}
+    {!noindex && alternates.length > 0 && <link rel="alternate" hreflang="x-default" href={alternates[0].href} />}
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap.xml" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="SecureCore" />

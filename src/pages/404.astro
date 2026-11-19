@@ -1,27 +1,23 @@
 ---
-import Base from '../layouts/Base.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { content } from '../i18n/content';
+import Page from '../layouts/Page.astro';
+import { content, pagePath } from '../i18n/content';
 
 const en = content.en.notFound;
 const id = content.id.notFound;
 ---
 
-<Base lang="en" title="404 — SecureCore" noindex>
-  <Header lang="en" onHome={false} />
-  <main id="main" class="nf container">
+<Page lang="en" title="404 — SecureCore" noindex>
+  <div class="nf container">
     <p class="code">404</p>
     <h1>{en.title}</h1>
     <p class="text">{en.text}</p>
     <p class="text" lang="id">{id.text}</p>
     <div class="links">
-      <a class="btn btn-primary" href="/">{en.back}</a>
-      <a class="btn btn-ghost" href="/id/" lang="id">{id.back}</a>
+      <a class="btn btn-primary" href={pagePath('en', 'home')}>{en.back}</a>
+      <a class="btn btn-ghost" href={pagePath('id', 'home')} lang="id">{id.back}</a>
     </div>
-  </main>
-  <Footer lang="en" />
-</Base>
+  </div>
+</Page>
 
 <style>
   .nf {

@@ -1,0 +1,220 @@
+---
+/**
+ * Flexible grid of icon + title + text items, with an optional section heading and CTA.
+ * variant:
+ *   card  – each item in its own card
+ *   plain – no boxes, icon on top (light, airy)
+ *   panel – one bordered panel split into cells
+ *   row   – card with icon on the left (good for 2 columns)
+ */
+import Icon from './Icon.astro';
+import SectionHead from './SectionHead.astro';
+import type { Feature } from '../i18n/content';
+
+interface Props {
+  items: Feature[];
+  kicker?: string;
+  title?: string;
+  lead?: string;
+  cols?: 2 | 3 | 4;
+  variant?: 'card' | 'plain' | 'panel' | 'row';
+  accent?: 'blue' | 'amber';
+  numbered?: boolean;
+  tinted?: boolean;
+  cta?: { href: string; label: string; style?: 'primary' | 'ghost' };
+  /** Set when the grid is not inside its own <section> heading (items become h2). */
+  itemHeading?: 'h2' | 'h3';
+}
+
+const {
+  items,
+  kicker,
+  title,
+  lead,
+  cols = 3,
+  variant = 'card',
+  accent = 'blue',
+  numbered = false,
+  tinted = false,
+  cta,
+  itemHeading = 'h3',
+} = Astro.props;
+const H = itemHeading;
+const headId = title ? `fg-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40)}` : undefined;
+---
+
+<section class:list={['section', { tinted }]} aria-labelledby={headId}>
+  <div class="container">
+    {title && <SectionHead kicker={kicker} title={title} lead={lead} id={headId} />}
+
+    <ul class:list={['grid', `cols-${cols}`, variant, accent]}>
+      {
+        items.map((it, i) => (
+          <li>
+            <div class="top">
+              <span class="icon">
+                <Icon name={it.icon} size={22} />
+              </span>
+              {numbered && <span class="num">{String(i + 1).padStart(2, '0')}</span>}
+            </div>
+            <div class="copy">
+              <H class="item-title">{it.title}</H>
+              <p>{it.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    {
+      cta && (
+        <div class="section-foot">
+          <a class:list={['btn', cta.style === 'primary' ? 'btn-primary' : 'btn-ghost']} href={cta.href}>
+            {cta.label}
+            <Icon name="arrow" size={18} class="icon-arrow" />
+          </a>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .tinted {
+    background: linear-gradient(180deg, transparent, rgba(16, 27, 48, 0.4) 30%, rgba(16, 27, 48, 0.4) 70%, transparent);
+  }
+
+  .grid {
+    display: grid;
+    gap: 16px;
+  }
+
+  .cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 11px;
+  }
+
+  .blue .icon {
+    color: var(--accent);
+    background: rgba(30, 125, 218, 0.12);
+    border: 1px solid rgba(30, 125, 218, 0.3);
+  }
+
+  .amber .icon {
+    color: var(--amber);
+    background: rgba(253, 188, 91, 0.1);
+    border: 1px solid rgba(253, 188, 91, 0.25);
+  }
+
+  .item-title {
+    font-size: 1.125rem;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .copy p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  /* card */
+  .card li {
+    padding: 26px 24px 28px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-elevated) 100%);
+    transition: border-color 0.2s ease;
+  }
+
+  .card li:hover {
+    border-color: var(--border-strong);
+  }
+
+  /* plain */
+  .plain {
+    gap: 36px 32px;
+  }
+
+  .plain li {
+    padding-top: 22px;
+    border-top: 1px solid var(--border-strong);
+  }
+
+  /* panel */
+  .panel {
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-elevated);
+  }
+
+  .panel li {
+    padding: 28px 26px 30px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin: 0 -1px -1px 0;
+  }
+
+  /* row */
+  .row li {
+    display: flex;
+    gap: 18px;
+    padding: 22px 24px 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-elevated) 100%);
+  }
+
+  .row .top {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 860px) {
+    .cols-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 640px) {
+    .cols-2,
+    .cols-3,
+    .cols-4 {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .card li,
+    .panel li {
+      padding: 22px 20px 24px;
+    }
+    .row li {
+      padding: 18px;
+      gap: 14px;
+    }
+    .plain {
+      gap: 28px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .section-foot .btn {
+      width: 100%;
+    }
+  }
+</style>

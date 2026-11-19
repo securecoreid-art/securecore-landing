@@ -1,0 +1,29 @@
+---
+/** Kicker + title + optional lead used at the top of sections. */
+interface Props {
+  kicker?: string;
+  title: string;
+  lead?: string;
+  id?: string;
+  align?: 'left' | 'center';
+}
+
+const { kicker, title, lead, id, align = 'left' } = Astro.props;
+---
+
+<div class:list={['section-head', align]}>
+  {kicker && <p class="kicker">{kicker}</p>}
+  <h2 id={id} class="section-title">{title}</h2>
+  {lead && <p class="section-lead">{lead}</p>}
+</div>
+
+<style>
+  .center {
+    text-align: center;
+    display: grid;
+    justify-items: center;
+  }
+  .center .section-lead {
+    margin-inline: auto;
+  }
+</style>

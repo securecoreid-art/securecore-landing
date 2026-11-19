@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { content, mailto, type Lang } from '../i18n/content';
+import { content, mailto, pagePath, type Lang } from '../i18n/content';
 
 interface Props {
   lang: Lang;
@@ -14,19 +14,20 @@ const maxCount = Math.max(...r.severities.map((s) => s.count));
 ---
 
 <section class="hero" aria-labelledby="hero-title">
-  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="grid-bg" aria-hidden="true"></div>
   <div class="container hero-grid">
     <div class="hero-copy">
       <p class="kicker">{t.hero.eyebrow}</p>
       <h1 id="hero-title">{t.hero.title}</h1>
-      <p class="lead">{t.hero.lead}</p>
+      <p class="lead">{t.hero.lead[0]}</p>
+      <p class="lead-2">{t.hero.lead[1]}</p>
 
       <div class="ctas">
         <a class="btn btn-primary" href={mailto(t.hero.mailSubject)}>
           {t.hero.primaryCta}
           <Icon name="arrow" size={18} class="icon-arrow" />
         </a>
-        <a class="btn btn-ghost" href="#services">{t.hero.secondaryCta}</a>
+        <a class="btn btn-ghost" href={pagePath(lang, 'services')}>{t.hero.secondaryCta}</a>
       </div>
 
       <ul class="tags">
@@ -41,7 +42,7 @@ const maxCount = Math.max(...r.severities.map((s) => s.count));
       </ul>
     </div>
 
-    <figure class="report card" aria-label={r.label}>
+    <figure class="report card" aria-labelledby="report-heading">
       <div class="report-top">
         <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
         <span class="file">{r.file}</span>
@@ -49,6 +50,9 @@ const maxCount = Math.max(...r.severities.map((s) => s.count));
       </div>
 
       <div class="report-body">
+        <p id="report-heading" class="report-heading">{r.heading}</p>
+
+        <p class="sub">{r.overviewTitle}</p>
         <dl class="meta">
           {
             r.rows.map((row) => (
@@ -84,7 +88,7 @@ const maxCount = Math.max(...r.severities.map((s) => s.count));
           {r.note}
         </p>
       </div>
-      <figcaption class="sr-only">{r.label}</figcaption>
+      <figcaption class="disclaimer">{r.disclaimer}</figcaption>
     </figure>
   </div>
 </section>
@@ -92,33 +96,20 @@ const maxCount = Math.max(...r.severities.map((s) => s.count));
 <style>
   .hero {
     position: relative;
-    padding-block: clamp(56px, 9vw, 112px) clamp(72px, 10vw, 128px);
+    padding-block: clamp(56px, 8vw, 104px) clamp(72px, 9vw, 120px);
     overflow: hidden;
-  }
-
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-      radial-gradient(600px 400px at 15% 10%, rgba(30, 125, 218, 0.22), transparent 70%),
-      radial-gradient(500px 360px at 90% 70%, rgba(253, 188, 91, 0.08), transparent 70%),
-      linear-gradient(rgba(154, 168, 191, 0.06) 1px, transparent 1px) 0 0 / 48px 48px,
-      linear-gradient(90deg, rgba(154, 168, 191, 0.06) 1px, transparent 1px) 0 0 / 48px 48px;
-    mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, #000 40%, transparent 100%);
-    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, #000 40%, transparent 100%);
   }
 
   .hero-grid {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
     gap: clamp(40px, 6vw, 80px);
     align-items: center;
   }
 
   h1 {
-    font-size: clamp(2.25rem, 5.2vw, 3.9rem);
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
     line-height: 1.06;
     letter-spacing: -0.03em;
   }
@@ -126,6 +117,14 @@ const maxCount = Math.max(...r.severities.map((s) => s.count));
   .lead {
     margin-top: 24px;
     font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+    color: var(--text);
+    opacity: 0.9;
+    max-width: 56ch;
+  }
+
+  .lead-2 {
+    margin-top: 14px;
+    font-size: 1rem;
     color: var(--text-muted);
     max-width: 56ch;
   }
@@ -134,14 +133,14 @@ const maxCount = Math.max(...r.severities.map((s) => s.count));
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    margin-top: 36px;
+    margin-top: 34px;
   }
 
   .tags {
     display: flex;
     flex-wrap: wrap;
     gap: 10px 22px;
-    margin-top: 32px;
+    margin-top: 30px;
     color: var(--text-muted);
     font-size: 0.9rem;
   }
@@ -182,6 +181,7 @@ const maxCount = Math.max(...r.severities.map((s) => s.count));
   .dots {
     display: inline-flex;
     gap: 6px;
+    flex-shrink: 0;
   }
 
   .dots i {
@@ -199,19 +199,45 @@ const maxCount = Math.max(...r.severities.map((s) => s.count));
     min-width: 0;
   }
 
+  .badge {
+    margin-left: auto;
+    white-space: nowrap;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    color: var(--text-subtle);
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
+    background: var(--bg);
+  }
+
   .report-body {
-    padding: 20px 20px 22px;
+    padding: 20px 20px 20px;
+  }
+
+  .report-heading {
+    font-weight: 500;
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .sub {
+    color: var(--text-subtle);
+    margin-bottom: 8px;
   }
 
   .meta {
-    margin: 0 0 22px;
+    margin: 0 0 20px;
     display: grid;
     gap: 8px;
   }
 
   .meta div {
     display: grid;
-    grid-template-columns: 80px 1fr;
+    grid-template-columns: 104px 1fr;
     gap: 12px;
   }
 
@@ -231,6 +257,7 @@ const maxCount = Math.max(...r.severities.map((s) => s.count));
   .sev-title {
     display: flex;
     justify-content: space-between;
+    gap: 12px;
     padding-top: 18px;
     border-top: 1px dashed var(--border-strong);
     margin-bottom: 12px;
@@ -297,16 +324,13 @@ const maxCount = Math.max(...r.severities.map((s) => s.count));
     margin-top: 1px;
   }
 
-  .badge {
-    margin-left: auto;
-    white-space: nowrap;
-    padding: 3px 8px;
-    border-radius: 999px;
-    border: 1px solid var(--border-strong);
+  .disclaimer {
+    padding: 10px 20px 12px;
+    border-top: 1px solid var(--border);
     color: var(--text-subtle);
-    font-size: 0.6875rem;
-    letter-spacing: 0.02em;
-    background: var(--bg);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-style: italic;
   }
 
   @media (max-width: 960px) {
@@ -326,7 +350,8 @@ const maxCount = Math.max(...r.severities.map((s) => s.count));
       display: none;
     }
     .meta div {
-      grid-template-columns: 64px 1fr;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
     }
     .sev li {
       grid-template-columns: 60px 1fr 20px;

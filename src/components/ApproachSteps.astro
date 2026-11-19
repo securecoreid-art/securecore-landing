@@ -1,0 +1,118 @@
+---
+/** Approach page: vertical timeline of the 5 steps. */
+import SectionHead from './SectionHead.astro';
+import { content, type Lang } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = content[Astro.props.lang].approach;
+---
+
+<section class="section" aria-labelledby="steps-title">
+  <div class="container">
+    <SectionHead kicker={t.stepsKicker} title={t.stepsTitle} id="steps-title" />
+    <ol class="steps">
+      {
+        t.steps.map((step, i) => (
+          <li>
+            <span class="marker" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <div class="body">
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    max-width: 880px;
+  }
+
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    bottom: 28px;
+    left: 27px;
+    width: 1px;
+    background: linear-gradient(180deg, var(--brand-blue), var(--brand-amber));
+    opacity: 0.55;
+  }
+
+  li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 28px;
+    padding-bottom: 40px;
+  }
+
+  li:last-child {
+    padding-bottom: 0;
+  }
+
+  .marker {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--amber);
+  }
+
+  .body {
+    padding: 22px 26px 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-elevated) 100%);
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 600px) {
+    .steps::before {
+      left: 21px;
+    }
+    li {
+      grid-template-columns: 44px minmax(0, 1fr);
+      gap: 16px;
+      padding-bottom: 24px;
+    }
+    .marker {
+      width: 44px;
+      height: 44px;
+      font-size: 0.8125rem;
+    }
+    .body {
+      padding: 18px 18px 20px;
+    }
+    h3 {
+      font-size: 1.125rem;
+    }
+  }
+</style>

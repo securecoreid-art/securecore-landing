@@ -1,38 +1,50 @@
 ---
 import Shield from './Shield.astro';
 import Icon from './Icon.astro';
-import { content, homePath, mailto, type Lang } from '../i18n/content';
+import { PAGES, content, pagePath, type Lang, type PageKey } from '../i18n/content';
 
 interface Props {
   lang: Lang;
-  /** Anchor links only make sense on the home page. */
-  onHome?: boolean;
+  /** Current page: highlights the menu item and keeps the language switch on the same page. */
+  page?: PageKey;
 }
 
-const { lang, onHome = true } = Astro.props;
+const { lang, page } = Astro.props;
 const t = content[lang];
 const otherLang: Lang = lang === 'en' ? 'id' : 'en';
-const home = homePath(lang);
-const navHref = (hash: string) => (onHome ? hash : `${home}${hash}`);
+const links = PAGES.map((key) => ({
+  key,
+  href: pagePath(lang, key),
+  label: t.nav[key],
+  current: key === page,
+}));
 ---
 
-<header class="site-header">
+<header class="site-header" id="top">
   <div class="container bar">
-    <a class="brand" href={home} aria-label={t.a11y.home}>
+    <a class="brand" href={pagePath(lang, 'home')} aria-label={t.a11y.home}>
       <Shield size={30} id="hdr" />
       <span class="wordmark">SECURE CORE</span>
     </a>
 
     <nav class="nav-desktop" aria-label={t.a11y.primaryNav}>
       <ul>
-        {t.nav.map((item) => <li><a href={navHref(item.href)}>{item.label}</a></li>)}
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} aria-current={l.current ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
       </ul>
     </nav>
 
     <div class="actions">
       <a
         class="lang"
-        href={homePath(otherLang)}
+        href={pagePath(otherLang, page ?? 'home')}
         hreflang={otherLang}
         lang={otherLang}
         aria-label={t.a11y.langSwitch}
@@ -41,7 +53,7 @@ const navHref = (hash: string) => (onHome ? hash : `${home}${hash}`);
         <Icon name="globe" size={16} />
         <span>{t.langShort}</span>
       </a>
-      <a class="btn btn-primary btn-sm cta" href={mailto(t.hero.mailSubject)}>{t.navCta}</a>
+      <a class="btn btn-primary btn-sm cta" href={pagePath(lang, 'contact')}>{t.navCta}</a>
 
       <details class="nav-mobile">
         <summary aria-label={t.a11y.menu}>
@@ -50,9 +62,17 @@ const navHref = (hash: string) => (onHome ? hash : `${home}${hash}`);
         </summary>
         <nav class="mobile-panel" aria-label={t.a11y.primaryNav}>
           <ul>
-            {t.nav.map((item) => <li><a href={navHref(item.href)}>{item.label}</a></li>)}
+            {
+              links.map((l) => (
+                <li>
+                  <a href={l.href} aria-current={l.current ? 'page' : undefined}>
+                    {l.label}
+                  </a>
+                </li>
+              ))
+            }
           </ul>
-          <a class="btn btn-primary" href={mailto(t.hero.mailSubject)}>{t.navCta}</a>
+          <a class="btn btn-primary" href={pagePath(lang, 'contact')}>{t.navCta}</a>
         </nav>
       </details>
     </div>
@@ -60,12 +80,9 @@ const navHref = (hash: string) => (onHome ? hash : `${home}${hash}`);
 </header>
 
 <script>
-  // Close the mobile menu after a link is chosen or Escape is pressed.
+  // Close the mobile menu on Escape.
   const menu = document.querySelector<HTMLDetailsElement>('.nav-mobile');
   if (menu) {
-    menu.querySelectorAll('a').forEach((a) =>
-      a.addEventListener('click', () => menu.removeAttribute('open')),
-    );
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && menu.open) {
         menu.removeAttribute('open');
@@ -118,10 +135,11 @@ const navHref = (hash: string) => (onHome ? hash : `${home}${hash}`);
 
   .nav-desktop ul {
     display: flex;
-    gap: 4px;
+    gap: 2px;
   }
 
   .nav-desktop a {
+    position: relative;
     display: block;
     padding: 8px 12px;
     border-radius: var(--radius-sm);
@@ -134,6 +152,21 @@ const navHref = (hash: string) => (onHome ? hash : `${home}${hash}`);
     color: var(--text);
     background: var(--surface);
     text-decoration: none;
+  }
+
+  .nav-desktop a[aria-current='page'] {
+    color: var(--text);
+  }
+
+  .nav-desktop a[aria-current='page']::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: -14px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--brand-amber);
   }
 
   .actions {
@@ -202,6 +235,8 @@ const navHref = (hash: string) => (onHome ? hash : `${home}${hash}`);
     left: 0;
     right: 0;
     top: var(--header-h);
+    max-height: calc(100vh - var(--header-h));
+    overflow-y: auto;
     background: var(--bg-elevated);
     border-bottom: 1px solid var(--border);
     padding: 12px var(--gutter) 24px;
@@ -217,17 +252,31 @@ const navHref = (hash: string) => (onHome ? hash : `${home}${hash}`);
   }
 
   .mobile-panel ul a {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     padding: 14px 4px;
     color: var(--text);
     font-weight: 500;
+  }
+
+  .mobile-panel ul a[aria-current='page'] {
+    color: var(--brand-amber);
+  }
+
+  .mobile-panel ul a[aria-current='page']::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--brand-amber);
   }
 
   .mobile-panel .btn {
     width: 100%;
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 1080px) {
     .nav-desktop,
     .cta {
       display: none;

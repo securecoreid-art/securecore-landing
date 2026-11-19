@@ -1,0 +1,62 @@
+---
+/** Large centered brand statement ("Who we are"). */
+import Icon from './Icon.astro';
+import { content, pagePath, type Lang } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = content[lang].statement;
+---
+
+<section class="section statement" aria-labelledby="statement-title">
+  <div class="container inner">
+    <p class="kicker">{t.kicker}</p>
+    <h2 id="statement-title">{t.title}</h2>
+    <p class="body">{t.body}</p>
+    <a class="link" href={pagePath(lang, 'about')}>
+      {t.link}
+      <Icon name="arrow" size={16} class="icon-arrow" />
+    </a>
+  </div>
+</section>
+
+<style>
+  .inner {
+    max-width: 920px;
+    display: grid;
+    justify-items: center;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: clamp(1.875rem, 4vw, 3rem);
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+  }
+
+  .body {
+    margin-top: 22px;
+    max-width: 66ch;
+    color: var(--text-muted);
+    font-size: clamp(1.0625rem, 1.5vw, 1.1875rem);
+  }
+
+  .link {
+    margin-top: 28px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+
+  .link :global(.icon-arrow) {
+    transition: transform 0.15s ease;
+  }
+
+  .link:hover :global(.icon-arrow) {
+    transform: translateX(3px);
+  }
+</style>

@@ -1,0 +1,18 @@
+---
+import Page from '../layouts/Page.astro';
+import PageHero from '../components/PageHero.astro';
+import ServiceDetail from '../components/ServiceDetail.astro';
+import FeatureGrid from '../components/FeatureGrid.astro';
+import Callout from '../components/Callout.astro';
+import { content, pagePath, type Lang } from '../i18n/content';
+
+const { lang } = Astro.props as { lang: Lang };
+const s = content[lang].services;
+---
+
+<Page lang={lang} page="services">
+  <PageHero kicker={s.kicker} title={s.title} lead={s.lead} />
+  <ServiceDetail lang={lang} />
+  <FeatureGrid title={s.includes.title} items={s.includes.items} cols={4} variant="panel" accent="amber" tinted />
+  <Callout title={s.notSure.title} text={s.notSure.text} href={pagePath(lang, 'contact')} cta={s.cta} icon="chat" />
+</Page>

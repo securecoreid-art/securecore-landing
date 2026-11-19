@@ -1,0 +1,63 @@
+---
+/** Top-of-page heading block for inner pages (About, Services, ...). */
+interface Props {
+  kicker: string;
+  title: string;
+  lead?: string[];
+}
+
+const { kicker, title, lead = [] } = Astro.props;
+---
+
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="grid-bg" aria-hidden="true"></div>
+  <div class="container inner">
+    <p class="kicker">{kicker}</p>
+    <h1 id="page-title">{title}</h1>
+    {
+      lead.length > 0 && (
+        <div class="lead">
+          {lead.map((p, i) => (
+            <p class={i === 0 ? 'first' : undefined}>{p}</p>
+          ))}
+        </div>
+      )
+    }
+    <slot />
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(56px, 8vw, 96px) clamp(48px, 6vw, 72px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .inner {
+    position: relative;
+  }
+
+  h1 {
+    font-size: clamp(2.125rem, 4.6vw, 3.5rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    max-width: 22ch;
+  }
+
+  .lead {
+    margin-top: 24px;
+    display: grid;
+    gap: 14px;
+    max-width: 64ch;
+    color: var(--text-muted);
+    font-size: 1.0625rem;
+  }
+
+  .lead .first {
+    color: var(--text);
+    opacity: 0.9;
+    font-size: clamp(1.0625rem, 1.5vw, 1.1875rem);
+  }
+</style>

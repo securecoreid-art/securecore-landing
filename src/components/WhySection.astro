@@ -6,30 +6,31 @@ interface Props {
   lang: Lang;
 }
 
-const t = content[Astro.props.lang].about;
-const icons = ['eye', 'scale', 'target'];
+const t = content[Astro.props.lang].why;
 ---
 
-<section id="about" class="section" aria-labelledby="about-title">
+<section class="section" aria-labelledby="why-title">
   <div class="container grid">
-    <div>
+    <div class="intro">
       <p class="kicker">{t.kicker}</p>
-      <h2 id="about-title" class="section-title">{t.title}</h2>
-      <div class="body">
-        {t.body.map((p) => <p>{p}</p>)}
+      <h2 id="why-title" class="section-title">{t.title}</h2>
+      <div class="lead">
+        {t.lead.map((p) => <p>{p}</p>)}
       </div>
+      <p class="emph">{t.intro}</p>
     </div>
 
-    <ul class="points">
+    <ul class="items">
       {
-        t.points.map((pt, i) => (
+        t.items.map((item, i) => (
           <li class="card">
             <span class="icon">
-              <Icon name={icons[i] ?? 'check'} size={22} />
+              <Icon name={item.icon} size={22} />
             </span>
             <div>
-              <h3>{pt.title}</h3>
-              <p>{pt.text}</p>
+              <p class="num">{String(i + 1).padStart(2, '0')}</p>
+              <h3>{item.title}</h3>
+              <p class="text">{item.text}</p>
             </div>
           </li>
         ))
@@ -46,21 +47,27 @@ const icons = ['eye', 'scale', 'target'];
     align-items: start;
   }
 
-  .body {
+  .lead {
     margin-top: 24px;
     display: grid;
-    gap: 16px;
+    gap: 14px;
     color: var(--text-muted);
     font-size: 1.0625rem;
-    max-width: 58ch;
+    max-width: 56ch;
   }
 
-  .points {
+  .emph {
+    margin-top: 24px;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .items {
     display: grid;
     gap: 14px;
   }
 
-  .points li {
+  .items li {
     display: flex;
     gap: 18px;
     padding: 22px 24px;
@@ -77,12 +84,16 @@ const icons = ['eye', 'scale', 'target'];
     color: var(--accent);
   }
 
+  .num {
+    margin-bottom: 4px;
+  }
+
   h3 {
     font-size: 1.0625rem;
     margin-bottom: 6px;
   }
 
-  .points p {
+  .text {
     color: var(--text-muted);
     font-size: 0.95rem;
   }
@@ -94,7 +105,7 @@ const icons = ['eye', 'scale', 'target'];
   }
 
   @media (max-width: 480px) {
-    .points li {
+    .items li {
       padding: 18px;
       gap: 14px;
     }

@@ -1,54 +1,167 @@
 ---
 import Shield from './Shield.astro';
-import { CONTACT_EMAIL, content, homePath, type Lang } from '../i18n/content';
+import Icon from './Icon.astro';
+import { CONTACT_EMAIL, content, languages, pagePath, type Lang, type PageKey } from '../i18n/content';
 
 interface Props {
   lang: Lang;
+  /** Current page, so the language links keep the visitor on the same page. */
+  page?: PageKey;
 }
 
-const { lang } = Astro.props;
+const { lang, page } = Astro.props;
 const t = content[lang];
+const f = t.footer;
 const year = new Date().getFullYear();
+const servicesBase = pagePath(lang, 'services');
+const company: PageKey[] = ['home', 'about', 'approach', 'principles', 'contact'];
+const langs = (Object.keys(languages) as Lang[]).map((l) => ({
+  code: l,
+  label: languages[l],
+  href: pagePath(l, page ?? 'home'),
+  current: l === lang,
+}));
 ---
 
 <footer class="site-footer">
+  <div class="accent-line" aria-hidden="true"></div>
+  <div class="glow" aria-hidden="true"></div>
+
   <div class="container">
-    <div class="top">
-      <a class="brand" href={homePath(lang)} aria-label={t.a11y.home}>
-        <Shield size={36} id="ftr" />
-        <span>
+    <div class="cols">
+      <!-- brand -->
+      <div class="brand-col">
+        <a class="brand" href={pagePath(lang, 'home')} aria-label={t.a11y.home}>
+          <Shield size={40} id="ftr" />
           <span class="wordmark">SECURE CORE</span>
-          <span class="tagline">{t.footer.tagline}</span>
-        </span>
-      </a>
-      <p class="legal">{t.footer.legal}</p>
+        </a>
+        <p class="desc">{f.lines[0]}</p>
+        <p class="tagline">{f.lines[1]}</p>
+        <ul class="badges">
+          {
+            t.hero.tags.map((tag) => (
+              <li>
+                <Icon name="shieldCheck" size={14} />
+                {tag}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- services -->
+      <nav class="col" aria-label={f.servicesTitle}>
+        <h2>{f.servicesTitle}</h2>
+        <ul class="links">
+          {
+            t.services.items.map((s) => (
+              <li>
+                <a href={`${servicesBase}#${s.id}`}>{s.title}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <!-- company -->
+      <nav class="col" aria-label={f.companyTitle}>
+        <h2>{f.companyTitle}</h2>
+        <ul class="links">
+          {
+            company.map((p) => (
+              <li>
+                <a href={pagePath(lang, p)} aria-current={p === page ? 'page' : undefined}>
+                  {t.nav[p]}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <!-- contact -->
+      <div class="col contact-col">
+        <h2>{f.contactTitle}</h2>
+        <p class="contact-text">{f.contactText}</p>
+        <a class="mail" href={`mailto:${CONTACT_EMAIL}`}>
+          <span class="mail-icon"><Icon name="mail" size={18} /></span>
+          <span class="mail-copy">
+            <span class="mail-label">Email</span>
+            <span class="mail-addr">{CONTACT_EMAIL}</span>
+          </span>
+        </a>
+        <a class="btn btn-ghost btn-sm contact-btn" href={pagePath(lang, 'contact')}>
+          {t.navCta}
+          <Icon name="arrow" size={16} class="icon-arrow" />
+        </a>
+      </div>
     </div>
 
     <div class="bottom">
-      <p>© {year} SecureCore. {t.footer.rights}</p>
-      <ul>
-        <li><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></li>
-        <li><a href="/.well-known/security.txt">{t.footer.securityTxt}</a></li>
-      </ul>
+      <p class="copy">© {year} SecureCore. {f.rights}</p>
+      <p class="sec">
+        <Icon name="lock" size={14} />
+        {f.securityText}
+      </p>
+      <div class="bottom-right">
+        <ul class="langs" aria-label={f.languageLabel}>
+          {
+            langs.map((l) => (
+              <li>
+                <a href={l.href} hreflang={l.code} lang={l.code} aria-current={l.current ? 'true' : undefined}>
+                  {l.code.toUpperCase()}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <a class="to-top" href="#top" aria-label={f.backToTop} title={f.backToTop}>
+          <Icon name="arrow" size={16} />
+        </a>
+      </div>
     </div>
   </div>
+
+  <div class="watermark" aria-hidden="true">SECURECORE</div>
 </footer>
 
 <style>
   .site-footer {
-    border-top: 1px solid var(--border);
-    background: var(--bg-elevated);
-    padding-block: 48px 32px;
-    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #08101e 0%, #050a14 100%);
+    padding-top: clamp(56px, 8vw, 88px);
+    font-size: 0.9375rem;
+    isolation: isolate;
   }
 
-  .top {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 24px 48px;
-    padding-bottom: 32px;
-    border-bottom: 1px solid var(--border);
+  .accent-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--brand-blue) 25%, var(--brand-amber) 75%, transparent 100%);
+    opacity: 0.85;
+  }
+
+  .glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(520px 260px at 12% 0%, rgba(30, 125, 218, 0.14), transparent 70%),
+      radial-gradient(420px 220px at 92% 10%, rgba(253, 188, 91, 0.06), transparent 70%);
+  }
+
+  /* ---------- columns ---------- */
+
+  .cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.1fr) minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 48px 40px;
+    padding-bottom: clamp(40px, 6vw, 56px);
   }
 
   .brand {
@@ -63,44 +176,274 @@ const year = new Date().getFullYear();
   }
 
   .wordmark {
-    display: block;
     font-weight: 800;
-    letter-spacing: 0.1em;
+    font-size: 1.125rem;
+    letter-spacing: 0.12em;
+  }
+
+  .desc {
+    margin-top: 20px;
+    color: var(--text-muted);
+    max-width: 34ch;
   }
 
   .tagline {
-    display: block;
-    margin-top: 2px;
-    color: var(--amber);
-    font-size: 0.8125rem;
-    letter-spacing: 0.04em;
+    margin-top: 8px;
+    color: var(--brand-amber);
+    font-weight: 500;
   }
 
-  .legal {
-    max-width: 46ch;
+  .badges {
+    margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .badges li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    background: rgba(16, 27, 48, 0.6);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .badges :global(svg) {
+    color: var(--accent);
+  }
+
+  h2 {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h2::before {
+    content: '';
+    width: 14px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--brand-amber);
+  }
+
+  .links {
+    display: grid;
+    gap: 12px;
+  }
+
+  .links a {
+    position: relative;
+    color: var(--text-muted);
+    transition: color 0.15s ease, padding-left 0.15s ease;
+  }
+
+  .links a:hover {
+    color: var(--text);
+    text-decoration: none;
+    padding-left: 4px;
+  }
+
+  .links a[aria-current='page'] {
+    color: var(--text);
+  }
+
+  /* ---------- contact ---------- */
+
+  .contact-text {
+    color: var(--text-muted);
+    margin-bottom: 18px;
+    max-width: 34ch;
+  }
+
+  .mail {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    background: rgba(16, 27, 48, 0.6);
+    color: var(--text);
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .mail:hover {
+    text-decoration: none;
+    border-color: var(--accent);
+    background: rgba(30, 125, 218, 0.08);
+  }
+
+  .mail-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    color: var(--accent);
+    background: rgba(30, 125, 218, 0.14);
+    border: 1px solid rgba(30, 125, 218, 0.35);
+  }
+
+  .mail-copy {
+    display: grid;
+    min-width: 0;
+  }
+
+  .mail-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     color: var(--text-subtle);
   }
+
+  .mail-addr {
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+
+  .contact-btn {
+    margin-top: 14px;
+  }
+
+  /* ---------- bottom bar ---------- */
 
   .bottom {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     justify-content: space-between;
-    gap: 12px 32px;
-    padding-top: 24px;
+    gap: 16px 32px;
+    padding-block: 22px;
+    border-top: 1px solid var(--border);
     color: var(--text-subtle);
+    font-size: 0.85rem;
   }
 
-  .bottom ul {
+  .sec {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sec :global(svg) {
+    color: var(--brand-amber);
+    flex-shrink: 0;
+  }
+
+  .bottom-right {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px 24px;
+    align-items: center;
+    gap: 14px;
   }
 
-  .bottom a {
+  .langs {
+    display: flex;
+    padding: 3px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+  }
+
+  .langs a {
+    display: block;
+    padding: 4px 12px;
+    border-radius: 999px;
     color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
   }
 
-  .bottom a:hover {
+  .langs a:hover {
     color: var(--text);
+    text-decoration: none;
+  }
+
+  .langs a[aria-current='true'] {
+    background: var(--btn);
+    color: #fff;
+  }
+
+  .to-top {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    color: var(--text-muted);
+    transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .to-top :global(svg) {
+    transform: rotate(-90deg);
+  }
+
+  .to-top:hover {
+    color: var(--brand-amber);
+    border-color: var(--brand-amber);
+    transform: translateY(-2px);
+  }
+
+  /* ---------- watermark ---------- */
+
+  .watermark {
+    margin-top: -0.12em;
+    text-align: center;
+    font-weight: 800;
+    font-size: clamp(2.75rem, 12.4vw, 11.25rem);
+    line-height: 0.8;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(90, 168, 240, 0.16);
+    background: linear-gradient(180deg, rgba(30, 125, 218, 0.1), transparent 85%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    user-select: none;
+    pointer-events: none;
+    transform: translateY(18%);
+  }
+
+  /* ---------- responsive ---------- */
+
+  @media (max-width: 1024px) {
+    .cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .cols {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 40px 24px;
+    }
+    .brand-col,
+    .contact-col {
+      grid-column: 1 / -1;
+    }
+    .bottom {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .bottom-right {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .contact-btn {
+      width: 100%;
+    }
   }
 </style>

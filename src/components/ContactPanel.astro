@@ -1,4 +1,5 @@
 ---
+/** Contact page: email card + security notice. */
 import Icon from './Icon.astro';
 import { CONTACT_EMAIL, content, mailto, type Lang } from '../i18n/content';
 
@@ -9,15 +10,10 @@ interface Props {
 const t = content[Astro.props.lang].contact;
 ---
 
-<section id="contact" class="section" aria-labelledby="contact-title">
+<section class="section">
   <div class="container">
     <div class="panel">
       <div class="glow" aria-hidden="true"></div>
-      <div class="copy">
-        <p class="kicker">{t.kicker}</p>
-        <h2 id="contact-title" class="section-title">{t.title}</h2>
-        <p class="section-lead">{t.lead}</p>
-      </div>
 
       <div class="reach">
         <p class="label">{t.emailLabel}</p>
@@ -26,10 +22,13 @@ const t = content[Astro.props.lang].contact;
           <Icon name="mail" size={18} />
           {t.cta}
         </a>
-        <p class="note">
-          <Icon name="lock" size={16} />
-          <span>{t.note}</span>
-        </p>
+      </div>
+
+      <div class="notice">
+        <span class="notice-icon">
+          <Icon name="lock" size={20} />
+        </span>
+        <p>{t.notice}</p>
       </div>
     </div>
   </div>
@@ -40,10 +39,10 @@ const t = content[Astro.props.lang].contact;
     position: relative;
     overflow: hidden;
     display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-    gap: clamp(32px, 5vw, 64px);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(24px, 4vw, 48px);
     align-items: center;
-    padding: clamp(32px, 6vw, 64px);
+    padding: clamp(28px, 5vw, 56px);
     border-radius: 20px;
     border: 1px solid var(--border-strong);
     background: linear-gradient(135deg, #0f1c34 0%, var(--bg-elevated) 60%);
@@ -58,8 +57,8 @@ const t = content[Astro.props.lang].contact;
       radial-gradient(360px 240px at 100% 100%, rgba(253, 188, 91, 0.12), transparent 70%);
   }
 
-  .copy,
-  .reach {
+  .reach,
+  .notice {
     position: relative;
   }
 
@@ -67,10 +66,6 @@ const t = content[Astro.props.lang].contact;
     display: grid;
     gap: 16px;
     justify-items: start;
-    padding: 28px;
-    border-radius: var(--radius);
-    background: rgba(7, 13, 25, 0.6);
-    border: 1px solid var(--border);
   }
 
   .label {
@@ -83,7 +78,7 @@ const t = content[Astro.props.lang].contact;
 
   .email {
     font-family: var(--font-mono);
-    font-size: clamp(1.05rem, 2.2vw, 1.375rem);
+    font-size: clamp(1.25rem, 3vw, 1.875rem);
     font-weight: 500;
     color: var(--text);
     overflow-wrap: anywhere;
@@ -93,21 +88,29 @@ const t = content[Astro.props.lang].contact;
     color: var(--accent);
   }
 
-  .note {
+  .notice {
     display: flex;
-    gap: 10px;
+    gap: 14px;
     align-items: flex-start;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-    color: var(--text-subtle);
-    font-size: 0.85rem;
-    line-height: 1.55;
+    padding: 22px;
+    border-radius: var(--radius);
+    background: rgba(7, 13, 25, 0.6);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.925rem;
+    line-height: 1.6;
   }
 
-  .note :global(svg) {
+  .notice-icon {
+    display: grid;
+    place-items: center;
     flex-shrink: 0;
-    margin-top: 2px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     color: var(--amber);
+    background: rgba(253, 188, 91, 0.1);
+    border: 1px solid rgba(253, 188, 91, 0.25);
   }
 
   @media (max-width: 900px) {
@@ -117,14 +120,11 @@ const t = content[Astro.props.lang].contact;
   }
 
   @media (max-width: 480px) {
-    .panel {
-      padding: 28px 20px;
-    }
-    .reach {
-      padding: 20px;
-    }
     .reach .btn {
       width: 100%;
+    }
+    .notice {
+      padding: 18px;
     }
   }
 </style>

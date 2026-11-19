@@ -1,0 +1,108 @@
+---
+/** FAQ accordion using native <details> (no JavaScript). */
+import Icon from './Icon.astro';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  kicker?: string;
+  title: string;
+  items: { q: string; a: string }[];
+}
+
+const { kicker, title, items } = Astro.props;
+---
+
+<section class="section" aria-labelledby="faq-title">
+  <div class="container layout">
+    <SectionHead kicker={kicker} title={title} id="faq-title" />
+    <div class="list">
+      {
+        items.map((it) => (
+          <details>
+            <summary>
+              <span>{it.q}</span>
+              <span class="toggle" aria-hidden="true">
+                <Icon name="plus" size={18} />
+              </span>
+            </summary>
+            <p>{it.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+    gap: clamp(32px, 5vw, 64px);
+    align-items: start;
+  }
+
+  .list {
+    border-top: 1px solid var(--border-strong);
+  }
+
+  details {
+    border-bottom: 1px solid var(--border);
+  }
+
+  summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 4px;
+    font-weight: 600;
+    font-size: 1.0625rem;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary:hover {
+    color: var(--accent);
+  }
+
+  .toggle {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    color: var(--text-muted);
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  details[open] .toggle {
+    transform: rotate(45deg);
+    color: var(--amber);
+  }
+
+  details p {
+    padding: 0 48px 22px 4px;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    summary {
+      font-size: 1rem;
+    }
+    details p {
+      padding-right: 4px;
+    }
+  }
+</style>

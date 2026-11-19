@@ -1,0 +1,26 @@
+---
+import Page from '../layouts/Page.astro';
+import PageHero from '../components/PageHero.astro';
+import PrinciplesGrid from '../components/PrinciplesGrid.astro';
+import Callout from '../components/Callout.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { content, mailto, type Lang } from '../i18n/content';
+
+const { lang } = Astro.props as { lang: Lang };
+const p = content[lang].principles;
+---
+
+<Page lang={lang} page="principles">
+  <PageHero kicker={p.kicker} title={p.title} lead={p.lead} />
+  <PrinciplesGrid lang={lang} />
+  <Callout
+    kicker={p.report.kicker}
+    title={p.report.title}
+    text={p.report.text}
+    href={mailto(p.report.mailSubject)}
+    cta={p.report.cta}
+    icon="alert"
+    accent="amber"
+  />
+  <CtaBand lang={lang} />
+</Page>

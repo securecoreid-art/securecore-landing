@@ -1,0 +1,209 @@
+---
+/** Services page: jump links + one detailed block per service. */
+import Icon from './Icon.astro';
+import { content, type Lang } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const s = content[Astro.props.lang].services;
+---
+
+<section class="section">
+  <div class="container">
+    <nav class="jump" aria-label={s.jumpLabel}>
+      <p class="jump-label">{s.jumpLabel}</p>
+      <ul>
+        {s.items.map((it) => <li><a href={`#${it.id}`}>{it.title}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="list">
+      {
+        s.items.map((it, i) => (
+          <article id={it.id} class="svc">
+            <div class="main">
+              <div class="head">
+                <span class="icon">
+                  <Icon name={it.icon} size={26} />
+                </span>
+                <span class="num">{String(i + 1).padStart(2, '0')}</span>
+              </div>
+              <h2>{it.title}</h2>
+              <p class="first">{it.text[0]}</p>
+              <p>{it.text[1]}</p>
+            </div>
+            <div class="side">
+              <p class="label">{s.scopeLabel}</p>
+              <ul class="scope">
+                {it.scope.map((x) => (
+                  <li>
+                    <Icon name="check" size={16} />
+                    <span>{x}</span>
+                  </li>
+                ))}
+              </ul>
+              <div class="best">
+                <p class="label">{s.bestForLabel}</p>
+                <p>{it.bestFor}</p>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .jump {
+    margin-bottom: clamp(40px, 6vw, 56px);
+  }
+
+  .jump-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    margin-bottom: 12px;
+  }
+
+  .jump ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .jump a {
+    display: inline-block;
+    padding: 8px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+
+  .jump a:hover {
+    color: var(--text);
+    border-color: var(--accent);
+    text-decoration: none;
+  }
+
+  .list {
+    display: grid;
+    gap: 20px;
+  }
+
+  .svc {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-elevated) 100%);
+    overflow: hidden;
+    scroll-margin-top: calc(var(--header-h) + 24px);
+  }
+
+  .main {
+    padding: clamp(24px, 4vw, 40px);
+  }
+
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 22px;
+  }
+
+  .icon {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
+    color: var(--accent);
+    background: rgba(30, 125, 218, 0.12);
+    border: 1px solid rgba(30, 125, 218, 0.3);
+  }
+
+  h2 {
+    font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+    margin-bottom: 14px;
+  }
+
+  .main p {
+    color: var(--text-muted);
+  }
+
+  .main p + p {
+    margin-top: 12px;
+  }
+
+  .main .first {
+    color: var(--text);
+    opacity: 0.9;
+    font-size: 1.0625rem;
+  }
+
+  .side {
+    padding: clamp(24px, 4vw, 40px);
+    border-left: 1px solid var(--border);
+    background: rgba(7, 13, 25, 0.35);
+    display: grid;
+    align-content: start;
+    gap: 14px;
+  }
+
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--amber);
+  }
+
+  .scope {
+    display: grid;
+    gap: 10px;
+  }
+
+  .scope li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    color: var(--text);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .scope :global(svg) {
+    flex-shrink: 0;
+    margin-top: 3px;
+    color: var(--accent);
+  }
+
+  .best {
+    margin-top: 10px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    display: grid;
+    gap: 8px;
+  }
+
+  .best p:last-child {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 900px) {
+    .svc {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .side {
+      border-left: 0;
+      border-top: 1px solid var(--border);
+    }
+  }
+</style>

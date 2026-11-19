@@ -1,0 +1,45 @@
+---
+import Page from '../layouts/Page.astro';
+import Hero from '../components/Hero.astro';
+import ValueStrip from '../components/ValueStrip.astro';
+import Statement from '../components/Statement.astro';
+import FeatureGrid from '../components/FeatureGrid.astro';
+import ServiceList from '../components/ServiceList.astro';
+import ProcessStrip from '../components/ProcessStrip.astro';
+import Deliverables from '../components/Deliverables.astro';
+import WhySection from '../components/WhySection.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { content, pagePath, type Lang } from '../i18n/content';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = content[lang];
+---
+
+<Page lang={lang} page="home">
+  <Hero lang={lang} />
+  <ValueStrip lang={lang} />
+  <Statement lang={lang} />
+  <FeatureGrid
+    kicker={t.scenarios.kicker}
+    title={t.scenarios.title}
+    lead={t.scenarios.lead}
+    items={t.scenarios.items}
+    cols={3}
+    variant="plain"
+    tinted
+  />
+  <ServiceList lang={lang} />
+  <ProcessStrip lang={lang} />
+  <Deliverables lang={lang} />
+  <WhySection lang={lang} />
+  <FeatureGrid
+    kicker={t.principles.kicker}
+    title={t.principles.title}
+    items={t.principlesTeaser.items}
+    cols={4}
+    variant="panel"
+    accent="amber"
+    cta={{ href: pagePath(lang, 'principles'), label: t.principlesTeaser.cta }}
+  />
+  <CtaBand lang={lang} />
+</Page>

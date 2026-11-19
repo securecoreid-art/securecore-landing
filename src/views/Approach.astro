@@ -1,0 +1,21 @@
+---
+import Page from '../layouts/Page.astro';
+import PageHero from '../components/PageHero.astro';
+import ApproachSteps from '../components/ApproachSteps.astro';
+import FeatureGrid from '../components/FeatureGrid.astro';
+import Deliverables from '../components/Deliverables.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { content, type Lang } from '../i18n/content';
+
+const { lang } = Astro.props as { lang: Lang };
+const a = content[lang].approach;
+---
+
+<Page lang={lang} page="approach">
+  <PageHero kicker={a.kicker} title={a.title} lead={a.lead} />
+  <ApproachSteps lang={lang} />
+  <FeatureGrid kicker={a.needs.kicker} title={a.needs.title} lead={a.needs.lead} items={a.needs.items} cols={4} variant="card" numbered tinted />
+  <FeatureGrid kicker={a.during.kicker} title={a.during.title} items={a.during.items} cols={3} variant="plain" accent="amber" />
+  <Deliverables lang={lang} />
+  <CtaBand lang={lang} />
+</Page>

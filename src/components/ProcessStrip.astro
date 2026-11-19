@@ -1,38 +1,47 @@
 ---
-import { content, type Lang } from '../i18n/content';
+/** Home: condensed horizontal 5-step process. */
+import Icon from './Icon.astro';
+import SectionHead from './SectionHead.astro';
+import { content, pagePath, type Lang } from '../i18n/content';
 
 interface Props {
   lang: Lang;
 }
 
-const t = content[Astro.props.lang].approach;
+const { lang } = Astro.props;
+const p = content[lang].process;
 ---
 
-<section id="approach" class="section" aria-labelledby="approach-title">
+<section class="section tinted" aria-labelledby="home-process">
   <div class="container">
-    <div class="section-head">
-      <p class="kicker">{t.kicker}</p>
-      <h2 id="approach-title" class="section-title">{t.title}</h2>
-      <p class="section-lead">{t.lead}</p>
-    </div>
+    <SectionHead kicker={p.kicker} title={p.title} lead={p.lead} id="home-process" />
 
     <ol class="steps">
       {
-        t.steps.map((step, i) => (
+        p.steps.map((s, i) => (
           <li>
-            <span class="marker" aria-hidden="true">
-              {String(i + 1).padStart(2, '0')}
-            </span>
-            <h3>{step.title}</h3>
-            <p>{step.text}</p>
+            <span class="marker" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
           </li>
         ))
       }
     </ol>
+
+    <div class="section-foot">
+      <a class="btn btn-ghost" href={pagePath(lang, 'approach')}>
+        {p.cta}
+        <Icon name="arrow" size={18} class="icon-arrow" />
+      </a>
+    </div>
   </div>
 </section>
 
 <style>
+  .tinted {
+    background: linear-gradient(180deg, transparent, rgba(16, 27, 48, 0.4) 30%, rgba(16, 27, 48, 0.4) 70%, transparent);
+  }
+
   .steps {
     list-style: none;
     margin: 0;
@@ -43,7 +52,6 @@ const t = content[Astro.props.lang].approach;
     position: relative;
   }
 
-  /* connecting line behind the markers */
   .steps::before {
     content: '';
     position: absolute;
@@ -52,7 +60,7 @@ const t = content[Astro.props.lang].approach;
     right: 22px;
     height: 1px;
     background: linear-gradient(90deg, var(--brand-blue), var(--brand-amber));
-    opacity: 0.5;
+    opacity: 0.55;
   }
 
   li {
@@ -65,7 +73,7 @@ const t = content[Astro.props.lang].approach;
     place-items: center;
     width: 44px;
     height: 44px;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
     border-radius: 50%;
     background: var(--bg);
     border: 1px solid var(--border-strong);
@@ -77,7 +85,7 @@ const t = content[Astro.props.lang].approach;
 
   h3 {
     font-size: 1.0625rem;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
 
   p {
@@ -90,7 +98,6 @@ const t = content[Astro.props.lang].approach;
       grid-template-columns: minmax(0, 1fr);
       gap: 0;
     }
-
     .steps::before {
       top: 22px;
       bottom: 22px;
@@ -100,25 +107,27 @@ const t = content[Astro.props.lang].approach;
       height: auto;
       background: linear-gradient(180deg, var(--brand-blue), var(--brand-amber));
     }
-
     li {
       display: grid;
       grid-template-columns: 44px 1fr;
-      column-gap: 20px;
-      padding-bottom: 28px;
+      column-gap: 18px;
+      padding-bottom: 24px;
     }
-
     li:last-child {
       padding-bottom: 0;
     }
-
     .marker {
       grid-row: span 2;
       margin-bottom: 0;
     }
-
     h3 {
       padding-top: 10px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .section-foot .btn {
+      width: 100%;
     }
   }
 </style>

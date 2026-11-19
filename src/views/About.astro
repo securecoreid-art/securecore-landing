@@ -1,0 +1,20 @@
+---
+import Page from '../layouts/Page.astro';
+import PageHero from '../components/PageHero.astro';
+import MissionBelief from '../components/MissionBelief.astro';
+import FeatureGrid from '../components/FeatureGrid.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { content, type Lang } from '../i18n/content';
+
+const { lang } = Astro.props as { lang: Lang };
+const a = content[lang].about;
+---
+
+<Page lang={lang} page="about">
+  <PageHero kicker={a.kicker} title={a.title} lead={a.body} />
+  <MissionBelief lang={lang} />
+  <FeatureGrid kicker={a.apartKicker} title={a.apartTitle} items={a.points} cols={3} variant="card" numbered />
+  <FeatureGrid kicker={a.focus.kicker} title={a.focus.title} items={a.focus.items} cols={4} variant="plain" accent="amber" tinted />
+  <FeatureGrid kicker={a.audience.kicker} title={a.audience.title} lead={a.audience.lead} items={a.audience.items} cols={2} variant="row" />
+  <CtaBand lang={lang} />
+</Page>

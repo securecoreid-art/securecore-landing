@@ -282,6 +282,10 @@ const back = pagePath(lang, 'contact');
     position: relative;
     cursor: pointer;
     font-weight: 500;
+    /* no double-tap-to-zoom wait on touch devices */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
   }
 
   .chip input {
@@ -301,11 +305,15 @@ const back = pagePath(lang, 'contact');
     background: rgba(5, 10, 20, 0.5);
     color: var(--text-muted);
     font-size: 0.875rem;
-    transition: all 0.15s ease;
+    /* only hover gets a soft transition; checking/unchecking is instant */
+    transition: border-color 0.12s ease;
   }
 
+  /* the check icon always takes its space, so chips never shift when toggled */
   .chip span :global(svg) {
-    display: none;
+    opacity: 0;
+    transform: scale(0.6);
+    color: var(--accent);
   }
 
   .chip:hover span {
@@ -320,8 +328,8 @@ const back = pagePath(lang, 'contact');
   }
 
   .chip input:checked + span :global(svg) {
-    display: block;
-    color: var(--accent);
+    opacity: 1;
+    transform: none;
   }
 
   .chip input:focus-visible + span {

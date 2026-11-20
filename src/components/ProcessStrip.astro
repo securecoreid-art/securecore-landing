@@ -28,7 +28,11 @@ const p = content[lang].process;
       }
     </ol>
 
-    <div class="section-foot">
+    <div class="foot">
+      <p class="report-note">
+        <span class="note-icon"><Icon name="file" size={18} /></span>
+        <span>{p.reportNote}</span>
+      </p>
       <a class="btn btn-ghost" href={pagePath(lang, 'approach')}>
         {p.cta}
         <Icon name="arrow" size={18} class="icon-arrow" />
@@ -93,6 +97,40 @@ const p = content[lang].process;
     font-size: 0.925rem;
   }
 
+  .foot {
+    margin-top: clamp(36px, 5vw, 52px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px 32px;
+    padding: 20px 22px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: rgba(7, 13, 25, 0.5);
+  }
+
+  .report-note {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex: 1 1 420px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .note-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    color: var(--amber);
+    background: rgba(253, 188, 91, 0.1);
+    border: 1px solid rgba(253, 188, 91, 0.25);
+  }
+
   @media (max-width: 960px) {
     .steps {
       grid-template-columns: minmax(0, 1fr);
@@ -126,8 +164,11 @@ const p = content[lang].process;
   }
 
   @media (max-width: 480px) {
-    .section-foot .btn {
+    .foot .btn {
       width: 100%;
+    }
+    .report-note {
+      align-items: flex-start;
     }
   }
 </style>

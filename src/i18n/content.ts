@@ -120,21 +120,38 @@ const en = {
       { key: 'low', label: 'Low', count: 9 },
     ],
     disclaimer: 'Illustrative data for demonstration purposes only.',
-    note: 'Every finding is supported by technical evidence, impact analysis, and actionable remediation guidance.',
+    logTitle: 'Live assessment log',
+    log: [
+      '$ assess --scope web,api,cloud',
+      '› mapping attack surface … 42 endpoints',
+      '› validating findings … 19 confirmed',
+      '› generating report … done ✓',
+    ],
   },
 
-  valueStrip: [
-    { icon: 'scale', title: 'Independent', text: 'No vendor ties, no products to sell.' },
-    { icon: 'user', title: 'Researcher-Led', text: 'Tested and reported by the same people.' },
-    { icon: 'search', title: 'Manually Validated', text: 'Every finding verified, not just scanned.' },
-    { icon: 'file', title: 'Actionable Reports', text: 'Evidence, impact, and a clear fix for each issue.' },
-  ] as Feature[],
-
-  statement: {
+  intro: {
     kicker: 'Who We Are',
     title: 'An independent security research team, working on your side.',
     body: 'SecureCore helps organizations see their systems the way an attacker would, then explains what really matters and how to fix it. We combine hands-on technical research with clear, practical reporting, so your security decisions are based on evidence, not guesswork.',
     link: 'More about SecureCore',
+    pillarsIntro: 'At SecureCore, we emphasize three things:',
+    pillars: [
+      {
+        icon: 'scale',
+        title: 'Independent Perspective',
+        text: 'An independent approach to security assessment, free from vendor-driven recommendations and unnecessary product dependencies.',
+      },
+      {
+        icon: 'scan',
+        title: 'Technical Depth',
+        text: 'Hands-on investigation and technical validation to distinguish meaningful security risks from noise.',
+      },
+      {
+        icon: 'check',
+        title: 'Actionable Outcomes',
+        text: 'Clear findings, practical recommendations, and prioritized remediation guidance that help your team take the next step with confidence.',
+      },
+    ] as Feature[],
   },
 
   scenarios: {
@@ -186,6 +203,8 @@ const en = {
       { title: 'Reporting', text: 'Deliver evidence, impact, and prioritized fixes.' },
       { title: 'Remediation & Retesting', text: 'Support your fixes and confirm they work.' },
     ],
+    reportNote:
+      'Every engagement ends with a structured report: an executive summary, validated findings with evidence, risk ratings, and prioritized remediation guidance.',
     cta: 'See Our Full Approach',
   },
 
@@ -201,43 +220,6 @@ const en = {
       { title: 'Remediation Guidance', text: 'Practical, prioritized recommendations your team can act on.' },
       { title: 'Retest Verification', text: 'Confirmation of which issues have been resolved, where retesting is included.' },
     ],
-  },
-
-  principlesTeaser: {
-    items: [
-      { icon: 'shieldCheck', title: 'Authorized Only', text: 'No testing without written permission and an agreed scope.' },
-      { icon: 'lock', title: 'Confidential by Default', text: 'Your findings stay private. NDA available.' },
-      { icon: 'mail', title: 'Responsible Disclosure', text: 'Third-party issues are reported privately and responsibly.' },
-      { icon: 'eye', title: 'Evidence Over Fear', text: 'Validated facts, never scare tactics.' },
-    ] as Feature[],
-    cta: 'Read Our Principles',
-  },
-
-  why: {
-    kicker: 'Why SecureCore',
-    title: 'Security is not just about finding vulnerabilities. It’s about understanding them.',
-    lead: [
-      'A vulnerability alone does not tell the whole story.',
-      'Understanding its context, potential impact, and practical remediation is what makes security assessment valuable.',
-    ],
-    intro: 'At SecureCore, we emphasize three things:',
-    items: [
-      {
-        icon: 'scale',
-        title: 'Independent Perspective',
-        text: 'An independent approach to security assessment, free from vendor-driven recommendations and unnecessary product dependencies.',
-      },
-      {
-        icon: 'scan',
-        title: 'Technical Depth',
-        text: 'Hands-on investigation and technical validation to distinguish meaningful security risks from noise.',
-      },
-      {
-        icon: 'check',
-        title: 'Actionable Outcomes',
-        text: 'Clear findings, practical recommendations, and prioritized remediation guidance that help your team take the next step with confidence.',
-      },
-    ] as Feature[],
   },
 
   /* ----------------------------------------------------------- ABOUT */
@@ -755,21 +737,38 @@ const id: Content = {
       { key: 'low', label: 'Rendah', count: 9 },
     ],
     disclaimer: 'Data ilustrasi, hanya untuk keperluan demonstrasi.',
-    note: 'Setiap temuan didukung bukti teknis, analisis dampak, dan panduan perbaikan yang dapat langsung ditindaklanjuti.',
+    logTitle: 'Log asesmen',
+    log: [
+      '$ asesmen --cakupan web,api,cloud',
+      '› memetakan permukaan serangan … 42 endpoint',
+      '› memvalidasi temuan … 19 terkonfirmasi',
+      '› menyusun laporan … selesai ✓',
+    ],
   },
 
-  valueStrip: [
-    { icon: 'scale', title: 'Independen', text: 'Tanpa ikatan vendor, tanpa produk untuk dijual.' },
-    { icon: 'user', title: 'Dipimpin Peneliti', text: 'Diuji dan dilaporkan oleh orang yang sama.' },
-    { icon: 'search', title: 'Divalidasi Manual', text: 'Setiap temuan diverifikasi, bukan sekadar dipindai.' },
-    { icon: 'file', title: 'Laporan Siap Ditindaklanjuti', text: 'Bukti, dampak, dan solusi untuk setiap masalah.' },
-  ],
-
-  statement: {
+  intro: {
     kicker: 'Siapa Kami',
     title: 'Tim riset keamanan independen yang berada di pihak Anda.',
     body: 'SecureCore membantu organisasi melihat sistem mereka dari sudut pandang penyerang, lalu menjelaskan apa yang benar-benar penting dan bagaimana memperbaikinya. Kami memadukan riset teknis langsung dengan pelaporan yang jelas dan praktis, sehingga keputusan keamanan Anda didasarkan pada bukti, bukan dugaan.',
     link: 'Selengkapnya tentang SecureCore',
+    pillarsIntro: 'Di SecureCore, kami menekankan tiga hal:',
+    pillars: [
+      {
+        icon: 'scale',
+        title: 'Perspektif Independen',
+        text: 'Pendekatan asesmen keamanan yang independen, bebas dari rekomendasi yang digerakkan vendor dan ketergantungan produk yang tidak perlu.',
+      },
+      {
+        icon: 'scan',
+        title: 'Kedalaman Teknis',
+        text: 'Investigasi langsung dan validasi teknis untuk membedakan risiko keamanan yang berarti dari sekadar kebisingan.',
+      },
+      {
+        icon: 'check',
+        title: 'Hasil yang Dapat Ditindaklanjuti',
+        text: 'Temuan yang jelas, rekomendasi praktis, dan panduan perbaikan yang terprioritaskan agar tim Anda dapat melangkah dengan yakin.',
+      },
+    ],
   },
 
   scenarios: {
@@ -821,6 +820,8 @@ const id: Content = {
       { title: 'Pelaporan', text: 'Serahkan bukti, dampak, dan prioritas perbaikan.' },
       { title: 'Perbaikan & Pengujian Ulang', text: 'Dampingi perbaikan dan pastikan hasilnya berhasil.' },
     ],
+    reportNote:
+      'Setiap pekerjaan diakhiri dengan laporan terstruktur: ringkasan eksekutif, temuan tervalidasi beserta bukti, penilaian risiko, dan panduan perbaikan yang terprioritaskan.',
     cta: 'Lihat Pendekatan Lengkap',
   },
 
@@ -835,43 +836,6 @@ const id: Content = {
       { title: 'Penilaian Risiko', text: 'Tingkat keparahan berdasarkan dampak dan kemungkinan nyata di lingkungan Anda.' },
       { title: 'Panduan Perbaikan', text: 'Rekomendasi praktis dan terprioritaskan yang dapat langsung dijalankan tim Anda.' },
       { title: 'Verifikasi Retest', text: 'Konfirmasi masalah mana yang sudah tertangani, bila pengujian ulang termasuk dalam pekerjaan.' },
-    ],
-  },
-
-  principlesTeaser: {
-    items: [
-      { icon: 'shieldCheck', title: 'Hanya dengan Otorisasi', text: 'Tidak ada pengujian tanpa izin tertulis dan cakupan yang disepakati.' },
-      { icon: 'lock', title: 'Rahasia Sejak Awal', text: 'Temuan Anda tetap privat. Siap bekerja dengan NDA.' },
-      { icon: 'mail', title: 'Responsible Disclosure', text: 'Celah pada pihak ketiga dilaporkan secara privat dan bertanggung jawab.' },
-      { icon: 'eye', title: 'Bukti di Atas Rasa Takut', text: 'Fakta yang tervalidasi, tanpa taktik menakut-nakuti.' },
-    ],
-    cta: 'Baca Prinsip Kami',
-  },
-
-  why: {
-    kicker: 'Mengapa SecureCore',
-    title: 'Keamanan bukan sekadar menemukan kerentanan, tetapi memahaminya.',
-    lead: [
-      'Sebuah kerentanan saja tidak menceritakan keseluruhan gambaran.',
-      'Memahami konteks, potensi dampak, dan cara perbaikannya yang praktis, itulah yang membuat asesmen keamanan bernilai.',
-    ],
-    intro: 'Di SecureCore, kami menekankan tiga hal:',
-    items: [
-      {
-        icon: 'scale',
-        title: 'Perspektif Independen',
-        text: 'Pendekatan asesmen keamanan yang independen, bebas dari rekomendasi yang digerakkan vendor dan ketergantungan produk yang tidak perlu.',
-      },
-      {
-        icon: 'scan',
-        title: 'Kedalaman Teknis',
-        text: 'Investigasi langsung dan validasi teknis untuk membedakan risiko keamanan yang berarti dari sekadar kebisingan.',
-      },
-      {
-        icon: 'check',
-        title: 'Hasil yang Dapat Ditindaklanjuti',
-        text: 'Temuan yang jelas, rekomendasi praktis, dan panduan perbaikan yang terprioritaskan agar tim Anda dapat melangkah dengan yakin.',
-      },
     ],
   },
 

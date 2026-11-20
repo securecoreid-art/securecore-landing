@@ -37,16 +37,6 @@ const langs = (Object.keys(languages) as Lang[]).map((l) => ({
         </a>
         <p class="desc">{f.lines[0]}</p>
         <p class="tagline">{f.lines[1]}</p>
-        <ul class="badges">
-          {
-            t.hero.tags.map((tag) => (
-              <li>
-                <Icon name="shieldCheck" size={14} />
-                {tag}
-              </li>
-            ))
-          }
-        </ul>
       </div>
 
       <!-- services -->
@@ -193,29 +183,6 @@ const langs = (Object.keys(languages) as Lang[]).map((l) => ({
     font-weight: 500;
   }
 
-  .badges {
-    margin-top: 24px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .badges li {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 10px;
-    border: 1px solid var(--border-strong);
-    border-radius: 999px;
-    background: rgba(16, 27, 48, 0.6);
-    color: var(--text-muted);
-    font-size: 0.75rem;
-    white-space: nowrap;
-  }
-
-  .badges :global(svg) {
-    color: var(--accent);
-  }
 
   h2 {
     font-family: var(--font-mono);

@@ -1,24 +1,25 @@
 ---
 import Page from '../layouts/Page.astro';
 import Hero from '../components/Hero.astro';
-import ValueStrip from '../components/ValueStrip.astro';
-import Statement from '../components/Statement.astro';
+import Intro from '../components/Intro.astro';
 import FeatureGrid from '../components/FeatureGrid.astro';
 import ServiceList from '../components/ServiceList.astro';
 import ProcessStrip from '../components/ProcessStrip.astro';
-import Deliverables from '../components/Deliverables.astro';
-import WhySection from '../components/WhySection.astro';
 import CtaBand from '../components/CtaBand.astro';
-import { content, pagePath, type Lang } from '../i18n/content';
+import { content, type Lang } from '../i18n/content';
 
 const { lang } = Astro.props as { lang: Lang };
 const t = content[lang];
 ---
 
+<!--
+  Home: each section has one job, so no message repeats.
+  1 Hero (who we are, animated) → 2 Who we are + 3 pillars → 3 When to bring us in
+  → 4 Services → 5 How we work (+ what you receive) → 6 Call to action
+-->
 <Page lang={lang} page="home">
   <Hero lang={lang} />
-  <ValueStrip lang={lang} />
-  <Statement lang={lang} />
+  <Intro lang={lang} />
   <FeatureGrid
     kicker={t.scenarios.kicker}
     title={t.scenarios.title}
@@ -30,16 +31,5 @@ const t = content[lang];
   />
   <ServiceList lang={lang} />
   <ProcessStrip lang={lang} />
-  <Deliverables lang={lang} />
-  <WhySection lang={lang} />
-  <FeatureGrid
-    kicker={t.principles.kicker}
-    title={t.principles.title}
-    items={t.principlesTeaser.items}
-    cols={4}
-    variant="panel"
-    accent="amber"
-    cta={{ href: pagePath(lang, 'principles'), label: t.principlesTeaser.cta }}
-  />
   <CtaBand lang={lang} />
 </Page>

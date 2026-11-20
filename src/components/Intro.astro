@@ -1,0 +1,145 @@
+---
+/** Home: "Who we are" brand statement + the three pillars, in one section. */
+import Icon from './Icon.astro';
+import { content, pagePath, type Lang } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = content[lang].intro;
+---
+
+<section class="section" aria-labelledby="intro-title">
+  <div class="container grid">
+    <div class="statement">
+      <p class="kicker">{t.kicker}</p>
+      <h2 id="intro-title">{t.title}</h2>
+      <p class="body">{t.body}</p>
+      <a class="link" href={pagePath(lang, 'about')}>
+        {t.link}
+        <Icon name="arrow" size={16} class="icon-arrow" />
+      </a>
+    </div>
+
+    <div class="pillars">
+      <p class="pillars-intro">{t.pillarsIntro}</p>
+      <ol>
+        {
+          t.pillars.map((p, i) => (
+            <li>
+              <span class="icon">
+                <Icon name={p.icon} size={22} />
+              </span>
+              <div>
+                <p class="num">{String(i + 1).padStart(2, '0')}</p>
+                <h3>{p.title}</h3>
+                <p class="text">{p.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(40px, 6vw, 88px);
+    align-items: start;
+  }
+
+  h2 {
+    font-size: clamp(1.875rem, 3.6vw, 2.75rem);
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+  }
+
+  .body {
+    margin-top: 22px;
+    color: var(--text-muted);
+    font-size: clamp(1.0625rem, 1.4vw, 1.1875rem);
+    max-width: 56ch;
+  }
+
+  .link {
+    margin-top: 26px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+
+  .link :global(.icon-arrow) {
+    transition: transform 0.15s ease;
+  }
+
+  .link:hover :global(.icon-arrow) {
+    transform: translateX(3px);
+  }
+
+  .pillars-intro {
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+
+  li {
+    display: flex;
+    gap: 18px;
+    padding: 22px 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-elevated) 100%);
+  }
+
+  .icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    color: var(--accent);
+    background: rgba(30, 125, 218, 0.12);
+    border: 1px solid rgba(30, 125, 218, 0.3);
+  }
+
+  .num {
+    margin-bottom: 4px;
+  }
+
+  h3 {
+    font-size: 1.0625rem;
+    margin-bottom: 6px;
+  }
+
+  .text {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    li {
+      padding: 18px;
+      gap: 14px;
+    }
+  }
+</style>

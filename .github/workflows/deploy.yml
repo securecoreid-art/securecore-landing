@@ -39,6 +39,29 @@ jobs:
           test -f dist/id/index.html
           test -f dist/.htaccess
           test -f dist/.well-known/security.txt
+          test -f dist/api/contact.php
+          test -f dist/api/.htaccess
+
+      # Contact form → Google Sheet. Secrets never enter the repo:
+      # they are written to dist/api/_config.php here and uploaded with the site.
+      # (_config.php is blocked from web access by api/.htaccess and only executed by PHP.)
+      - name: Write contact form config
+        env:
+          APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
+          FORM_SECRET: ${{ secrets.FORM_SECRET }}
+        run: |
+          php -r '
+            $c = [
+              "apps_script_url" => (string) getenv("APPS_SCRIPT_URL"),
+              "secret"          => (string) getenv("FORM_SECRET"),
+            ];
+            file_put_contents("dist/api/_config.php", "<?php\nreturn " . var_export($c, true) . ";\n");
+          '
+          php -l dist/api/_config.php
+          php -l dist/api/contact.php
+          if [ -z "$APPS_SCRIPT_URL" ] || [ -z "$FORM_SECRET" ]; then
+            echo "::warning::APPS_SCRIPT_URL / FORM_SECRET not set: form will use the email fallback only."
+          fi
 
       - name: Deploy to cPanel (FTPS)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6

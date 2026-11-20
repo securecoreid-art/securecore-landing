@@ -18,6 +18,9 @@ pnpm-debug.log*
 *.key
 .ftp-deploy-sync-state.json
 
+# contact form secrets (generated at deploy time)
+_config.php
+
 # OS / editor
 .DS_Store
 .vscode/*

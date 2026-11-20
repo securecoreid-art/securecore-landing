@@ -1,0 +1,562 @@
+---
+/**
+ * Contact page form.
+ * - Posts to /api/contact.php (same origin → CSP form-action/connect-src 'self').
+ * - With JS: sent via fetch, result shown in a <dialog> popup (src/scripts/contact-form.ts).
+ * - Without JS: normal POST; the server redirects back to #form-sent / #form-error,
+ *   which are revealed with CSS :target.
+ */
+import Icon from './Icon.astro';
+import { CONTACT_EMAIL, content, mailto, pagePath, type Lang } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = content[lang];
+const c = t.contact;
+const f = c.form;
+const services = [...t.services.items.map((s) => ({ value: s.id, label: s.title })), { value: 'not-sure', label: f.notSure }];
+const back = pagePath(lang, 'contact');
+---
+
+<section class="section" id="form">
+  <div class="container layout">
+    <div class="form-card">
+      <h2>{f.title}</h2>
+      <p class="lead">{f.lead}</p>
+
+      <!-- no-JS result messages (shown via :target) -->
+      <p id="form-sent" class="flash ok" role="status">
+        <Icon name="check" size={18} />
+        <span>{f.sentPlain}</span>
+      </p>
+      <p id="form-error" class="flash err" role="alert">
+        <Icon name="alert" size={18} />
+        <span>{f.error.body}</span>
+      </p>
+
+      <form
+        action="/api/contact.php"
+        method="post"
+        data-contact-form
+        data-success-title={f.success.title}
+        data-success-body={f.success.body}
+        data-error-title={f.error.title}
+        data-error-body={f.error.body}
+        data-rate-body={f.rateLimited}
+        data-sending={f.sending}
+        data-services-error={f.servicesError}
+        novalidate
+      >
+        <input type="hidden" name="lang" value={lang} />
+        <input type="hidden" name="back" value={back} />
+        <input type="hidden" name="elapsed" value="" data-elapsed />
+
+        <!-- honeypot: invisible to people, tempting to bots -->
+        <div class="hp" aria-hidden="true">
+          <label for="cf-website">Website</label>
+          <input id="cf-website" type="text" name="website" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="row two">
+          <div class="field">
+            <label for="cf-name">{f.name} <span class="req" aria-hidden="true">*</span></label>
+            <input id="cf-name" name="name" type="text" required minlength="2" maxlength="100" autocomplete="name" placeholder={f.namePh} />
+          </div>
+          <div class="field">
+            <label for="cf-email">{f.email} <span class="req" aria-hidden="true">*</span></label>
+            <input id="cf-email" name="email" type="email" required maxlength="254" autocomplete="email" inputmode="email" placeholder={f.emailPh} />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="cf-org">{f.organization} <span class="req" aria-hidden="true">*</span></label>
+          <input id="cf-org" name="organization" type="text" required minlength="2" maxlength="150" autocomplete="organization" placeholder={f.organizationPh} />
+        </div>
+
+        <fieldset class="field services" data-services>
+          <legend>{f.services} <span class="req" aria-hidden="true">*</span></legend>
+          <p class="hint">{f.servicesHint}</p>
+          <div class="chips">
+            {
+              services.map((s) => (
+                <label class="chip">
+                  <input type="checkbox" name="services[]" value={s.value} />
+                  <span>
+                    <Icon name="check" size={14} />
+                    {s.label}
+                  </span>
+                </label>
+              ))
+            }
+          </div>
+          <p class="field-error" data-services-error hidden>{f.servicesError}</p>
+        </fieldset>
+
+        <div class="field">
+          <label for="cf-message">{f.message} <span class="req" aria-hidden="true">*</span></label>
+          <textarea id="cf-message" name="message" required minlength="20" maxlength="3000" rows="6" placeholder={f.messagePh}></textarea>
+          <p class="hint warn">
+            <Icon name="lock" size={14} />
+            {f.messageHint}
+          </p>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary submit" type="submit">
+            <span data-label>{f.submit}</span>
+            <Icon name="arrow" size={18} class="icon-arrow" />
+          </button>
+          <p class="privacy">{f.privacy}</p>
+        </div>
+      </form>
+    </div>
+
+    <aside class="aside">
+      <div class="mail-card">
+        <p class="label">{f.orEmail}</p>
+        <p class="aside-text">{f.orEmailText}</p>
+        <a class="email" href={mailto(c.mailSubject)}>
+          <span class="mail-icon"><Icon name="mail" size={18} /></span>
+          {CONTACT_EMAIL}
+        </a>
+      </div>
+      <div class="notice">
+        <span class="notice-icon"><Icon name="lock" size={18} /></span>
+        <p>{c.notice}</p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- result popup (JS) -->
+  <dialog class="modal" data-contact-modal aria-labelledby="modal-title">
+    <div class="modal-inner">
+      <span class="modal-icon" data-modal-icon>
+        <Icon name="check" size={26} class="i-ok" />
+        <Icon name="alert" size={26} class="i-err" />
+      </span>
+      <h2 id="modal-title" data-modal-title></h2>
+      <p data-modal-body></p>
+      <form method="dialog">
+        <button class="btn btn-primary" type="submit">{f.close}</button>
+      </form>
+    </div>
+  </dialog>
+</section>
+
+<script>
+  import '../scripts/contact-form';
+</script>
+
+<style>
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.75fr);
+    gap: clamp(24px, 4vw, 40px);
+    align-items: start;
+  }
+
+  /* ---------- form card ---------- */
+
+  .form-card {
+    position: relative;
+    padding: clamp(24px, 4vw, 40px);
+    border-radius: 20px;
+    border: 1px solid var(--border-strong);
+    background: linear-gradient(160deg, #0f1c34 0%, var(--bg-elevated) 55%);
+    overflow: hidden;
+  }
+
+  .form-card h2 {
+    font-size: clamp(1.5rem, 2.6vw, 1.875rem);
+  }
+
+  .lead {
+    margin-top: 8px;
+    margin-bottom: 28px;
+    color: var(--text-muted);
+  }
+
+  form[data-contact-form] {
+    display: grid;
+    gap: 20px;
+  }
+
+  .row.two {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .field {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  label,
+  legend {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    padding: 0;
+  }
+
+  .req {
+    color: var(--brand-amber);
+  }
+
+  input[type='text'],
+  input[type='email'],
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border-strong);
+    background: rgba(5, 10, 20, 0.7);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.975rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 140px;
+    line-height: 1.6;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--text-subtle);
+  }
+
+  input[type='text']:focus,
+  input[type='email']:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(90, 168, 240, 0.18);
+  }
+
+  form:global(.was-validated) input:invalid,
+  form:global(.was-validated) textarea:invalid {
+    border-color: var(--sev-critical);
+  }
+
+  .hint {
+    color: var(--text-subtle);
+    font-size: 0.825rem;
+    font-weight: 400;
+  }
+
+  .hint.warn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .hint.warn :global(svg) {
+    color: var(--brand-amber);
+    flex-shrink: 0;
+  }
+
+  /* service chips */
+  .services legend {
+    margin-bottom: 2px;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .chip {
+    position: relative;
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  .chip input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+
+  .chip span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: rgba(5, 10, 20, 0.5);
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    transition: all 0.15s ease;
+  }
+
+  .chip span :global(svg) {
+    display: none;
+  }
+
+  .chip:hover span {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .chip input:checked + span {
+    background: rgba(30, 125, 218, 0.18);
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .chip input:checked + span :global(svg) {
+    display: block;
+    color: var(--accent);
+  }
+
+  .chip input:focus-visible + span {
+    outline: 2px solid var(--brand-amber);
+    outline-offset: 2px;
+  }
+
+  .field-error {
+    color: var(--sev-critical);
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 20px;
+    margin-top: 4px;
+  }
+
+  .submit[disabled] {
+    opacity: 0.7;
+    cursor: progress;
+  }
+
+  .privacy {
+    color: var(--text-subtle);
+    font-size: 0.825rem;
+  }
+
+  /* honeypot */
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  /* no-JS result messages */
+  .flash {
+    display: none;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    font-size: 0.925rem;
+  }
+
+  .flash:target {
+    display: flex;
+  }
+
+  .flash :global(svg) {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .flash.ok {
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.35);
+    color: #bbf7d0;
+  }
+
+  .flash.err {
+    background: rgba(248, 113, 113, 0.1);
+    border: 1px solid rgba(248, 113, 113, 0.35);
+    color: #fecaca;
+  }
+
+  /* ---------- aside ---------- */
+
+  .aside {
+    display: grid;
+    gap: 16px;
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+  }
+
+  .mail-card,
+  .notice {
+    padding: 24px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-elevated) 100%);
+  }
+
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--brand-amber);
+  }
+
+  .aside-text {
+    margin-top: 6px;
+    margin-bottom: 16px;
+    color: var(--text-muted);
+    font-size: 0.925rem;
+  }
+
+  .email {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+
+  .email:hover {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .mail-icon,
+  .notice-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+
+  .mail-icon {
+    color: var(--accent);
+    background: rgba(30, 125, 218, 0.14);
+    border: 1px solid rgba(30, 125, 218, 0.35);
+  }
+
+  .notice {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .notice-icon {
+    color: var(--brand-amber);
+    background: rgba(253, 188, 91, 0.1);
+    border: 1px solid rgba(253, 188, 91, 0.25);
+  }
+
+  /* ---------- modal ---------- */
+
+  .modal {
+    width: min(460px, calc(100vw - 32px));
+    padding: 0;
+    border: 1px solid var(--border-strong);
+    border-radius: 18px;
+    background: var(--bg-elevated);
+    color: var(--text);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+  }
+
+  .modal::backdrop {
+    background: rgba(3, 7, 15, 0.72);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-inner {
+    padding: 32px 28px 28px;
+    text-align: center;
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+  }
+
+  .modal-icon {
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-bottom: 4px;
+  }
+
+  .modal-icon :global(.i-err) {
+    display: none;
+  }
+
+  .modal:global(.is-ok) .modal-icon {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.12);
+    border: 1px solid rgba(74, 222, 128, 0.4);
+  }
+
+  .modal:global(.is-error) .modal-icon {
+    color: var(--sev-critical);
+    background: rgba(248, 113, 113, 0.12);
+    border: 1px solid rgba(248, 113, 113, 0.4);
+  }
+
+  .modal:global(.is-error) .modal-icon :global(.i-ok) {
+    display: none;
+  }
+
+  .modal:global(.is-error) .modal-icon :global(.i-err) {
+    display: block;
+  }
+
+  .modal h2 {
+    font-size: 1.375rem;
+  }
+
+  .modal p {
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .modal form {
+    margin-top: 10px;
+  }
+
+  @media (max-width: 960px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .aside {
+      position: static;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .row.two {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .submit {
+      width: 100%;
+    }
+  }
+</style>

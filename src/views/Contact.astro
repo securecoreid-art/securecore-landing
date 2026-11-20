@@ -1,7 +1,7 @@
 ---
 import Page from '../layouts/Page.astro';
 import PageHero from '../components/PageHero.astro';
-import ContactPanel from '../components/ContactPanel.astro';
+import ContactForm from '../components/ContactForm.astro';
 import ContactNext from '../components/ContactNext.astro';
 import Faq from '../components/Faq.astro';
 import { content, type Lang } from '../i18n/content';
@@ -12,7 +12,7 @@ const c = content[lang].contact;
 
 <Page lang={lang} page="contact">
   <PageHero kicker={c.kicker} title={c.title} lead={c.lead} />
-  <ContactPanel lang={lang} />
+  <ContactForm lang={lang} />
   <ContactNext lang={lang} />
   <Faq kicker={c.faq.kicker} title={c.faq.title} items={c.faq.items} />
 </Page>

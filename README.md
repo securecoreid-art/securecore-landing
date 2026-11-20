@@ -111,6 +111,36 @@ Setelah itu, **setiap push ke `main` otomatis build & deploy.**
 
 ---
 
+## Form kontak → Google Sheet
+
+Alur: `/contact` → `public/api/contact.php` (anti-bot, rate limit, validasi, waktu **WIB**) → Google Apps Script → Google Sheet **SecureCore Leads** + email notifikasi ke `contact@securecore.id`.
+Kalau Google tidak bisa dihubungi, pesan dikirim lewat email (PHP `mail()`) sebagai cadangan.
+
+**Setup (sekali saja):**
+
+1. Login ke akun Google untuk SecureCore (aktifkan **verifikasi 2 langkah**).
+2. Buat Google Sheet baru bernama **SecureCore Leads**.
+3. Di sheet: **Extensions → Apps Script**. Hapus isi editor, tempel seluruh isi `integrations/google-apps-script/Code.gs`, simpan.
+4. ⚙️ **Project Settings** → *Time zone* = **(GMT+07:00) Jakarta**.
+5. Kembali ke editor, pilih fungsi **setup** → **Run** → izinkan akses.
+   Jika muncul *"Google hasn't verified this app"*: **Advanced → Go to … (unsafe)**. Ini script milik Anda sendiri.
+6. Buka **Execution log**, salin nilai **FORM_SECRET**.
+7. **Deploy → New deployment → Web app**: *Execute as* = **Me**, *Who has access* = **Anyone** → **Deploy**. Salin **Web app URL**.
+8. GitHub → Settings → Secrets → Actions, tambahkan:
+   | Secret | Isi |
+   |---|---|
+   | `APPS_SCRIPT_URL` | Web app URL dari langkah 7 |
+   | `FORM_SECRET` | nilai dari langkah 6 |
+9. Push / jalankan workflow. Saat deploy, kedua secret ditulis ke `api/_config.php` di server (tidak pernah masuk repo, dan diblokir dari akses web).
+
+**Catatan:**
+- Kolom sheet: *Waktu (WIB) · Nama · Email · Organisasi · Layanan · Pesan · Bahasa · Status*. Kolom **Status** berisi dropdown (Baru → Dihubungi → Diskusi → Selesai / Tidak relevan).
+- Mengubah `Code.gs` nanti? Simpan, lalu **Deploy → Manage deployments → Edit → Version: New version**. URL tetap sama.
+- Email notifikasi dikirim dari akun Google pemilik sheet; tombol *Reply* langsung ke pengirim form.
+- Batas anti-spam: 5 pesan per IP per jam (`RATE_LIMIT` di `contact.php`).
+
+---
+
 ## Checklist setelah deploy pertama
 
 - [ ] SSL aktif: cPanel → **SSL/TLS Status** → Run AutoSSL (wajib sebelum HSTS berlaku)
